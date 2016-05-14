@@ -13,7 +13,7 @@ function AppCtrl($scope, $rootScope, $location, $state, Data) {
     };
     
     function checkUser() {
-        Data.get('general', function(response){
+        Data.get('user', function(response){
             console.log('app user check: ', response);
             var logout = response.data.user == null;
             if(logout) {

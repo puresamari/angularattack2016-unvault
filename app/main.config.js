@@ -16,6 +16,9 @@ app.factory('Data', function($http, $rootScope) {
             case 'logout':
                 url = 'users/logout';
                 break;
+            case 'user':
+                url = 'users.json';
+                break;
         }
         var req = {
             method: 'GET',
