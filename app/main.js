@@ -26,6 +26,7 @@ require('./market/market.component.js');
 
 require('./directives/tabs/tabs.component.js');
 require('./directives/card/card.component.js');
+require('./directives/gravatar/gravatar.component.js');
 
 // general
 
