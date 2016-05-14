@@ -81,12 +81,17 @@ class UsersController extends AppController
      *
      * @return \Cake\Network\Response|null
      */
-    public function index()
+    public function index($id = null)
     {
-        $users = $this->paginate($this->Users);
-
-        $this->set(compact('users'));
-        $this->set('_serialize', ['users']);
+//        $users = $this->paginate($this->Users);
+		
+		$id = 1;
+		$user = $this->Users->get($id, [
+			'contain' => []
+		]);
+		
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 
     /**
@@ -100,13 +105,13 @@ class UsersController extends AppController
     {
 		$id = 1;
         $user = $this->Users->get($id, [
-            'contain' => [
-				'Cards'
-			]
+            'contain' => []
         ]);
+		
+		$cards = $this->Users->Cards->find('all',['limit' => 200]);
 
-        $this->set('user', $user);
-        $this->set('_serialize', ['user']);
+        $this->set(compact('user', 'cards'));
+        $this->set('_serialize', ['user', 'cards']);
     }
 
     /**
