@@ -1,4 +1,4 @@
-function LoginCtrl($scope, Data) {
+function LoginCtrl($scope, $rootScope, Data) {
     var vm = this;
     vm.model = {
         'email': '',
@@ -7,7 +7,8 @@ function LoginCtrl($scope, Data) {
     
     vm.send = function(){
         Data.send('login', vm.model, function (response) {
-            console.log(response.message);
+            localStorage.setItem('token', response.data.message.token);
+            console.log(response, localStorage.token);
         });
     };
  }

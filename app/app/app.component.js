@@ -14,7 +14,7 @@ function AppCtrl($scope, Data) {
     
     function checkUser() {
         Data.get('general', function(response){
-            console.log('checker got ', response.message);
+            console.log('checker got ', response);
             if(false) {
                 vm.logout();
             }

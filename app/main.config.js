@@ -17,14 +17,16 @@ app.factory('Data', function($http, $rootScope) {
                 url = 'users/logout';
                 break;
         }
-        return $http({
-                method: 'GET',
-                url: 'http://52.39.11.99/' + url,
-                headers: {
-                    'accept': 'application/json'
-                }
-            })
-            .then( _promise );
+        var req = {
+            method: 'GET',
+            url: 'http://52.39.11.99/' + url,
+            headers: {
+                'accept': 'application/json',
+                'Authorization': localStorage.token
+            }
+        };
+        console.log('requesting', req)
+        return $http(req).then( _promise );
     };
     
     service.send = function(e, data, _promise) {
@@ -54,4 +56,5 @@ app.factory('Data', function($http, $rootScope) {
 
 app.controller('MainCtrl', function(Data){
     var vm = this;
+    vm.token = '';
 });
