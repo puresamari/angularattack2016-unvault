@@ -2,10 +2,13 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\Event\Event;
-use Cake\View\Exception\MissingTemplateException;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Core\Configure;
+use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\UnauthorizedException;
+use Cake\Event\Event;
+use Cake\Utility\Text;
+use Cake\Utility\Security;
+
 
 /**
  * Users Controller
@@ -39,12 +42,16 @@ class UsersController extends AppController
 			$user = $this->Auth->identify();
 			if ($user) {
 				$this->Auth->setUser($user);
+				
+				$token =  Security::hash($user['id'].$user['email'], 'sha1', true);
+				$this->request->session()->write('Auth.User.token', $token);
+				$this->response->header('Authorization', 'Bearer ' . $token);
 				$message = [
 					"type" => "success",
-					"body" => "Logged In successfully"
+					"body" => "Logged In successfully",
+					"token" => 'Bearer ' . $token
 				];
-//				$user = $this->User->find('login', ['email'=>$username, 'password'=>$password]);
-//				return $this->redirect($this->Auth->redirectUrl());
+
 			} else {
 				$message = [
 					"type" => "error",
@@ -52,7 +59,7 @@ class UsersController extends AppController
 				];
 			}
 			
-			$message = json_encode($message);
+			//$message = json_encode($message);
 			
 			$this->set(compact('message'));
 			$this->set('_serialize', ['message']);
