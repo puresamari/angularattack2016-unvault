@@ -1,0 +1,12 @@
+$ ssh -i "unvault.pem" ubuntu@ec2-52-39-11-99.us-west-2.compute.amazonaws.com
+
+------------------
+lemp stack
+
+database: mysql
+db-name: unvault
+user: root
+password: qVnyydmtGzyH83
+
+nginx root folder
+/usr/share/nginx/html

@@ -11,5 +11,26 @@ require('../node_modules/angular-material/layouts/angular-material.layouts.min.c
 
 window.app = angular.module('unvault', ['ui.router', 'ngMaterial', 'ngAnimate']);
 
-require('app.component.js');
+app.config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('blue')
+        .accentPalette('yellow');
+    });
+
+// controller 
+
+require('./login/login.component.js');
+require('./app/app.component.js');
+require('./home/home.component.js');
+require('./user/user.component.js');
+require('./cards/cards.component.js');
+require('./market/market.component.js');
+
+// directives
+
+require('./directives/tabs/tabs.component.js');
+require('./directives/card/card.component.js');
+
+// general
+
 require('routes.js');
