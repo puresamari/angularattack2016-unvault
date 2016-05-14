@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: './app/app.js',
+    entry: './app/main.js',
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: '/dist/',
@@ -15,6 +15,10 @@ module.exports = {
                 loaders: [ 'style', 'css', 'sass' ]
             },
             {
+                test: /\.css$/,
+                loaders: [ 'style', 'css' ]
+            },
+            {
                test: /\.html$/,
                loader: 'raw-loader'
             }
@@ -25,7 +29,7 @@ module.exports = {
     },
     devtool: 'source-map',
     resolve: {
-        extensions: ['', '.js', '.scss', '.html'],
+        extensions: ['', '.js', '.scss', '.css', '.html'],
         root: [path.resolve(__dirname, './app')]
     },
     devServer: {
