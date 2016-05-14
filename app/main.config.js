@@ -10,7 +10,7 @@ app.factory('Data', function($http, $rootScope) {
     service.get = function(e, _promise) {
         var url = 'home.json';
         switch (e) {
-            case 'home':
+            case 'general':
                 url = 'home.json';
                 break;
         }
@@ -25,8 +25,7 @@ app.factory('Data', function($http, $rootScope) {
 app.controller('MainCtrl', function(Data){
     var vm = this;
     vm.user = {};
-    Data.get('home', function(result){
-        console.log(result)
-        vm.user = result.data;
+    Data.get('general', function(result){
+        vm.user = result.data.user;
     });
 });

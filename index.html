@@ -8,9 +8,7 @@
     <base href="/">
 </head>
 <body>
-    <section ng-app="unvault" ng-controller="MainCtrl as main">
-        <div id="content" ui-view flex></div>
-    </section>
+    <ui-view ng-app="unvault" ng-controller="MainCtrl as main" layout="column" flex layout-fill ng-cloak></ui-view>
     <script type="text/javascript" src="./dist/app.js"></script>
 </body>
 </html>

@@ -38,6 +38,8 @@ function TabsDirective($location, $window){
     
     return {
         restrict: 'E',
+        scope: true,
+        replace: true,
         controller: TabsCtrl,
         controllerAs: 'tabs',
         template: require('./tabs.component.html'),

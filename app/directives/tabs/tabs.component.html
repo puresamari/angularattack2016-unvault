@@ -1,16 +1,16 @@
-<header layout="column">
-    <div class="md-primary"><h2>User {{app.user.name}}</h2></div>
-    <md-toolbar flex md-whiteframe="4">
-        <md-tabs md-stretch-tabs md-selected="selectedIndex">
-            <md-tab ng-repeat="url in tabs.urls" 
-                ui-sref="app.{{url.url}}" md-active="tabs.stateName == url.url">
-                <md-icon 
-                    aria-label="{{ url.name }}"
-                    class="material-icons step"
-                    ng-class="it.size">
-                    {{url.icon}}
-                </md-icon>
-            </md-tab>
-        </md-tabs>
-    </md-toolbar>
-</header>
+<md-toolbar md-whiteframe="4">
+    <div class="md-toolbar-tools">
+        <div class="md-primary"><h2>User {{main.user.full_name}}</h2></div>
+    </div>
+    <md-tabs md-stretch-tabs md-selected="tabs.selectedIndex">
+        <md-tab ng-repeat="url in tabs.urls" 
+            ui-sref="app.{{url.url}}" md-active="tabs.stateName == url.url">
+            <md-icon 
+                aria-label="{{ url.name }}"
+                class="material-icons step"
+                ng-class="it.size">
+                {{url.icon}}
+            </md-icon>
+        </md-tab>
+    </md-tabs>
+</md-toolbar>
