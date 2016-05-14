@@ -1,3 +1,10 @@
-<md-tabs md-stretch-tabs md-selected="selectedIndex">
-    <md-tab ng-repeat="url in tabs.urls" label="{{url}}" ui-sref="app.{{url}}" md-active="tabs.stateName == url"><a></a></md-tab>
-</md-tabs>
+
+<md-toolbar md-whiteframe="4">
+    <span flex></span>
+    <h2 class="md-toolbar-tools md-toolbar-tools-bottom md-uppercase">
+        <span class="md-flex">{{tabs.stateName}}</span>
+    </h2>
+    <md-tabs md-stretch-tabs md-selected="selectedIndex">
+        <md-tab ng-repeat="url in tabs.urls" label="{{url}}" ui-sref="app.{{url}}" md-active="tabs.stateName == url"></md-tab>
+    </md-tabs>
+</md-toolbar>
