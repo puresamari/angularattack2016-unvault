@@ -1,8 +1,6 @@
-
 <header layout="column">
-    <div class="head-title md-primary"><h2>User {{app.user.name}}</h2></div>
-    <md-toolbar class="head-tabs-bar" flex md-whiteframe="4" 
-        ng-style="tabs.topBarStyle">
+    <div class="md-primary"><h2>User {{app.user.name}}</h2></div>
+    <md-toolbar flex md-whiteframe="4">
         <md-tabs md-stretch-tabs md-selected="selectedIndex">
             <md-tab ng-repeat="url in tabs.urls" 
                 ui-sref="app.{{url.url}}" md-active="tabs.stateName == url.url">

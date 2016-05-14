@@ -30,34 +30,14 @@ function TabsDirective($location, $window){
         ];
         
         vm.stateName = getNameFromState($state.current.name);
-        vm.topBarStyle = {};
         
         $rootScope.$on('$stateChangeSuccess', function(a,b){
             vm.stateName = getNameFromState($state.current.name);
-        });
-        
-        vm.topBarStyle = {};
-        
-        angular.element($window).bind("scroll", function() {
-            
-            var windowtop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            var titleElem = $element[0].querySelector('.head-title'),
-                elementVal = titleElem.offsetTop + titleElem.offsetHeight;
-            
-            console.log(elementVal, windowtop);
-            
-            vm.topBarStyle = elementVal < windowtop ? {
-                'position':'fixed',
-                'top' : '0'
-            } : {};
-            
         });
     }
     
     return {
         restrict: 'E',
-        scope: true,
         controller: TabsCtrl,
         controllerAs: 'tabs',
         template: require('./tabs.component.html'),
