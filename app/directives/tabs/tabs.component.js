@@ -5,7 +5,28 @@ function getNameFromState(statename){
 function TabsDirective($location){
     function TabsCtrl($scope, $rootScope, $location, $state) {
         var vm = this;
-        vm.urls = ['cards', 'home', 'user', 'market'];
+        vm.urls = [
+            {
+                title: 'Home',
+                url: 'home',
+                icon: 'home'
+            },
+            {
+                title: 'Cards',
+                url: 'cards',
+                icon: 'apps'
+            },
+            {
+                title: 'Market',
+                url: 'market',
+                icon: 'shopping_basket'
+            },
+            {
+                title: 'user',
+                url: 'user',
+                icon: 'account_box'
+            },
+        ];
         vm.stateName = getNameFromState($state.current.name);
         $rootScope.$on('$stateChangeSuccess', function(a,b){
             vm.stateName = getNameFromState($state.current.name);

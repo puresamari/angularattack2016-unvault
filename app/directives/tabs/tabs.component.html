@@ -4,6 +4,14 @@
         <span class="md-flex">{{tabs.stateName}}</span>
     </h2>
     <md-tabs md-stretch-tabs md-selected="selectedIndex">
-        <md-tab ng-repeat="url in tabs.urls" label="{{url}}" ui-sref="app.{{url}}" md-active="tabs.stateName == url"></md-tab>
+        <md-tab ng-repeat="url in tabs.urls" 
+            ui-sref="app.{{url.url}}" md-active="tabs.stateName == url.url">
+            <md-icon 
+                aria-label="{{ url.name }}"
+                class="material-icons step"
+                ng-class="it.size">
+                {{url.icon}}
+            </md-icon>
+        </md-tab>
     </md-tabs>
 </md-toolbar>
