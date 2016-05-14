@@ -11,5 +11,19 @@ require('../node_modules/angular-material/layouts/angular-material.layouts.min.c
 
 window.app = angular.module('unvault', ['ui.router', 'ngMaterial', 'ngAnimate']);
 
-require('app.component.js');
+// controller 
+
+require('./login/login.component.js');
+require('./app/app.component.js');
+require('./home/home.component.js');
+require('./user/user.component.js');
+require('./cards/cards.component.js');
+require('./market/market.component.js');
+
+// directives
+
+require('./directives/tabs/tabs.component.js');
+
+// general
+
 require('routes.js');
