@@ -41,6 +41,9 @@ app.factory('Data', function($http, $rootScope) {
             case 'login':
                 url = 'users/login';
                 break;
+            case 'add-card':
+                url = 'add-card.json';
+                break;
         }
         var req = {
             method: 'POST',

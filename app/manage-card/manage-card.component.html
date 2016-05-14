@@ -1,0 +1,21 @@
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <h1>manage Cards</h1>
+    </div>
+</md-toolbar>
+<md-content layout="column" flex layout-padding>
+    <h1 layout="row">Add card</h1>
+    <md-input-container layout="row">
+        <label>Email</label>
+        <input ng-model="register.model.email" type="email">
+    </md-input-container>
+    <md-input-container layout="row">
+        <label>Password</label>
+        <input ng-model="register.model.password" type="password">
+    </md-input-container>
+    <md-input-container layout="row">
+        <label>Full Name</label>
+        <input ng-model="register.model.full_name">
+    </md-input-container>
+    <md-button ng-click="register.send()">Submit</md-button>
+</md-content>

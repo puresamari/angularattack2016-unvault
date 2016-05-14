@@ -15,6 +15,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             template: require('./register/register.component.html'),
             controller: 'RegisterCtrl as register'
         })
+        .state('manage-cards', {
+            url: '/add-card',
+            template: require('./manage-card/manage-card.component.html'),
+            controller: 'ManageCardCtrl as manageCard'
+        })
         .state('app', {
             abstract: true,
             url: '/app',
