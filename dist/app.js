@@ -983,9 +983,10 @@
 	    return statename.split('.')[1];
 	}
 	
-	function TabsDirective($location){
-	    function TabsCtrl($scope, $rootScope, $location, $state) {
+	function TabsDirective($location, $window){
+	    function TabsCtrl($scope, $element, $rootScope, $location, $state) {
 	        var vm = this;
+	        
 	        vm.urls = [
 	            {
 	                title: 'Home',
@@ -1008,16 +1009,16 @@
 	                icon: 'account_box'
 	            },
 	        ];
+	        
 	        vm.stateName = getNameFromState($state.current.name);
+	        
 	        $rootScope.$on('$stateChangeSuccess', function(a,b){
 	            vm.stateName = getNameFromState($state.current.name);
 	        });
-	        
 	    }
 	    
 	    return {
 	        restrict: 'E',
-	        scope: true,
 	        controller: TabsCtrl,
 	        controllerAs: 'tabs',
 	        template: __webpack_require__(19),
@@ -1030,7 +1031,7 @@
 /* 19 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\n    <span flex></span>\n    <h2 class=\"md-toolbar-tools md-toolbar-tools-bottom md-uppercase\">\n        <span class=\"md-flex\">{{tabs.stateName}}</span>\n    </h2>\n    <md-tabs md-stretch-tabs md-selected=\"selectedIndex\">\n        <md-tab ng-repeat=\"url in tabs.urls\" \n            ui-sref=\"app.{{url.url}}\" md-active=\"tabs.stateName == url.url\">\n            <md-icon \n                aria-label=\"{{ url.name }}\"\n                class=\"material-icons step\"\n                ng-class=\"it.size\">\n                {{url.icon}}\n            </md-icon>\n        </md-tab>\n    </md-tabs>\n</md-toolbar>"
+	module.exports = "<header layout=\"column\">\n    <div class=\"md-primary\"><h2>User {{app.user.name}}</h2></div>\n    <md-toolbar flex md-whiteframe=\"4\">\n        <md-tabs md-stretch-tabs md-selected=\"selectedIndex\">\n            <md-tab ng-repeat=\"url in tabs.urls\" \n                ui-sref=\"app.{{url.url}}\" md-active=\"tabs.stateName == url.url\">\n                <md-icon \n                    aria-label=\"{{ url.name }}\"\n                    class=\"material-icons step\"\n                    ng-class=\"it.size\">\n                    {{url.icon}}\n                </md-icon>\n            </md-tab>\n        </md-tabs>\n    </md-toolbar>\n</header>"
 
 /***/ },
 /* 20 */
