@@ -6,12 +6,13 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'LoginCtrl as login'
         })
         .state('app', {
+            abstract: true,
             url: '/',
             template: require('./app/app.component.html'),
             controller: 'AppCtrl as app'
         })
         .state('app.home', {
-            url: 'home',
+            url: '',
             template: require('./home/home.component.html'),
             controller: 'HomeCtrl as home'
         })
