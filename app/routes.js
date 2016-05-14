@@ -22,7 +22,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'AppCtrl as app'
         })
         .state('app.home', {
-            url: '/home',
+            url: '',
             template: require('./home/home.component.html'),
             controller: 'HomeCtrl as home'
         })
