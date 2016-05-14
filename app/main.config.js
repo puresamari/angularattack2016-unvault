@@ -37,15 +37,16 @@ app.factory('Data', function($http, $rootScope) {
                 url = 'users/login';
                 break;
         }
-        return $http({
-                method: 'POST',
-                url: 'http://52.39.11.99/' + url,
-                data: data,
-                headers: {
-                    'accept': 'application/json'
-                }
-            })
-            .then( _promise );
+        var req = {
+            method: 'POST',
+            url: 'http://52.39.11.99/' + url,
+            data: data,
+            headers: {
+                'accept': 'application/json'
+            }
+        };
+        console.log('sending', req);
+        return $http(req).then( _promise );
     };
     
     return service;

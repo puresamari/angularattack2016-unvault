@@ -6,8 +6,8 @@ function RegisterCtrl($scope, Data) {
         "full_name": ""
     };
     vm.send = function(){
-        Data.send('register', vm.model, function (result) {
-            alert('registered: ', result);
+        Data.send('register', vm.model, function (response) {
+            alert('registered: ', response);
         });
     };
 }

@@ -6,8 +6,8 @@ function LoginCtrl($scope, Data) {
     };
     
     vm.send = function(){
-        Data.send('login', vm.model, function (result) {
-            alert('login return: ', result);
+        Data.send('login', vm.model, function (response) {
+            console.log(response.message);
         });
     };
  }
