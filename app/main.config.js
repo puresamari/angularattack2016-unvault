@@ -14,8 +14,31 @@ app.factory('Data', function($http, $rootScope) {
                 url = 'home.json';
                 break;
         }
-        return $http
-            .get('http://52.39.11.99/1/' + url)
+        return $http({
+                method: 'GET',
+                url: 'http://52.39.11.99/' + url,
+                headers: {
+                    'accept': 'application/json'
+                }
+            })
+            .then( _promise );
+    };
+    
+    service.send = function(e, data, _promise) {
+        var url = 'home.json';
+        switch (e) {
+            case 'register':
+                url = 'users/add';
+                break;
+        }
+        return $http({
+                method: 'POST',
+                url: 'http://52.39.11.99/' + url,
+                data: data,
+                headers: {
+                    'accept': 'application/json'
+                }
+            })
             .then( _promise );
     };
     

@@ -5,6 +5,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             template: require('./login/login.component.html'),
             controller: 'LoginCtrl as login'
         })
+        .state('register', {
+            url: '/register',
+            template: require('./register/register.component.html'),
+            controller: 'RegisterCtrl as register'
+        })
         .state('app', {
             abstract: true,
             url: '/',
