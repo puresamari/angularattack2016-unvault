@@ -1,5 +1,10 @@
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     $stateProvider
+        .state('landing', {
+            url: '/',
+            template: require('./landing/landing.component.html'),
+            controller: 'LandingCtrl as landing'
+        })
         .state('login', {
             url: '/login',
             template: require('./login/login.component.html'),
@@ -12,27 +17,27 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         })
         .state('app', {
             abstract: true,
-            url: '/',
+            url: '/app',
             template: require('./app/app.component.html'),
             controller: 'AppCtrl as app'
         })
         .state('app.home', {
-            url: '',
+            url: '/home',
             template: require('./home/home.component.html'),
             controller: 'HomeCtrl as home'
         })
         .state('app.market', {
-            url: 'market',
+            url: '/market',
             template: require('./market/market.component.html'),
             controller: 'MarketCtrl as market'
         })
         .state('app.cards', {
-            url: 'cards',
+            url: '/cards',
             template: require('./cards/cards.component.html'),
             controller: 'CardsCtrl as cards'
         })
         .state('app.user', {
-            url: 'user',
+            url: '/user',
             template: require('./user/user.component.html'),
             controller: 'UserCtrl as user'
         });
