@@ -50,9 +50,7 @@ class UsersController extends AppController
 				$token =  Security::hash($user['id'].$user['email'], 'sha1', true);
 				$this->request->session()->write('Auth.User.token', $token);
 				$this->response->header('Authorization', 'Bearer ' . $token);
-				print_r($this->request->session()->read());
-//				$user = $this->User->find('login', ['email'=>$username, 'password'=>$password]);
-//				return $this->redirect($this->Auth->redirectUrl());
+
 			} else {
 				$message = [
 					"type" => "error",
@@ -60,7 +58,7 @@ class UsersController extends AppController
 				];
 			}
 			
-			$message = json_encode($message);
+			//$message = json_encode($message);
 			
 			$this->set(compact('message'));
 			$this->set('_serialize', ['message']);
