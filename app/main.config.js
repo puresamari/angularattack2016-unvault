@@ -22,7 +22,7 @@ app.factory('Data', function($http, $rootScope) {
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json',
-                'Authorization': localStorage.token
+//                'Authorization': localStorage.token
             }
         };
         console.log('requesting', req)

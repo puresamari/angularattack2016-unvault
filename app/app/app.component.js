@@ -1,4 +1,4 @@
-function AppCtrl($scope, Data) {
+function AppCtrl($scope, $rootScope, $location, $state, Data) {
     var vm = this;
     
     var checkerTimeout;
@@ -20,8 +20,8 @@ function AppCtrl($scope, Data) {
             }
             vm.user = response.data.user;
         });
-        checkerTimeout = setTimeout(checkUser, 10000);
     }
+    $rootScope.$on('$stateChangeSuccess', checkUser);
     checkUser();
  }
 
