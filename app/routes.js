@@ -16,9 +16,9 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'RegisterCtrl as register'
         })
         .state('manage-cards', {
-            url: '/add-card',
-            template: require('./manage-card/manage-card.component.html'),
-            controller: 'ManageCardCtrl as manageCard'
+            url: '/manage-cards',
+            template: require('./manage-cards/manage-cards.component.html'),
+            controller: 'ManageCardsCtrl as manageCards'
         })
         .state('app', {
             abstract: true,
