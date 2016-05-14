@@ -16,6 +16,7 @@ app.config(function($mdThemingProvider) {
         .primaryPalette('blue')
         .accentPalette('yellow');
     });
+
 // controller 
 
 require('./login/login.component.js');
@@ -28,6 +29,7 @@ require('./market/market.component.js');
 // directives
 
 require('./directives/tabs/tabs.component.js');
+require('./directives/card/card.component.js');
 
 // general
 
