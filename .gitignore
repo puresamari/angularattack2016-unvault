@@ -2,3 +2,59 @@ node_modules
 npm-debug.log
 src/app/**/*.js
 src/app/**/*.js.map
+
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Desktop.ini
+
+# Thumbnails
+._*
+ehthumbs.db
+Thumbs.db
+
+# PhpStorm specific
+/.idea
+.idea/workspace.xml
+
+# File-based project format:
+*.ipr
+*.iws
+
+# Sass cache
+.sass-cache/
+
+#Extensions
+*.log
+*.orig
+*.diff
+*.err
+*.out
+*.swp
+*.bak
+*.tmp
+*~
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.psd
+*.bmp
+*.gif
+*.jpeg
+*.wav
+*.mp3
+*.wma
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
