@@ -14,17 +14,17 @@ use Cake\Network\Exception\UnauthorizedException;
  */
 class UsersController extends AppController
 {
-	
-//	public function beforeFilter(Event $event)
-//	{
-//		parent::beforeFilter($event);
-//		// Allow users to register and logout.
-//		// You should not add the "login" action to allow list. Doing so would
-//		// cause problems with normal functioning of AuthComponent.
-//		$this->Auth->config('authError', "Woopsie, you are not authorized to access this area.");
-//		
-//		$this->Auth->allow(['logout', 'login']);
-//	}
+
+	public function beforeFilter(Event $event)
+	{
+		parent::beforeFilter($event);
+		// Allow users to register and logout.
+		// You should not add the "login" action to allow list. Doing so would
+		// cause problems with normal functioning of AuthComponent.
+		$this->Auth->config('message', "Woopsie, you are not authorized to access this area.");
+		
+		$this->Auth->allow(['logout', 'add']);
+	}
 	
 	/**
      * Login method
@@ -34,15 +34,28 @@ class UsersController extends AppController
 	
 	public function login()
 	{
+		$message = [];
 		if ($this->request->is('post')) {
 			$user = $this->Auth->identify();
-			echo "user ".$user;
-			print_r($this->request);
 			if ($user) {
 				$this->Auth->setUser($user);
-				return $this->redirect($this->Auth->redirectUrl());
+				$message = [
+					"type" => "success",
+					"body" => "Logged In successfully"
+				];
+//				$user = $this->User->find('login', ['email'=>$username, 'password'=>$password]);
+//				return $this->redirect($this->Auth->redirectUrl());
+			} else {
+				$message = [
+					"type" => "error",
+					"body" => "Wrong username or password"
+				];
 			}
-			$this->Flash->error(__('Invalid username or password, try again'));
+			
+			$message = json_encode($message);
+			
+			$this->set(compact('message'));
+			$this->set('_serialize', ['message']);
 		}
 	}
 	

@@ -44,32 +44,19 @@ class AppController extends Controller
     {
         parent::initialize();
 		
-//		$this->loadComponent('Auth',[
-//			'authenticate' => [
-//				'Form' => [
-//					'fields' => ['username' => 'email', 'password'=>'password']
-//				]
-//			],
-//			'unauthorizedRedirect' => false
-//		]);
-		
-//		$this->loadComponent('Auth', [
-//			'authenticate' => [
-//				'Form' => [
-//					'fields' => ['username' => 'email', 'password'=>'password']
-//				]
-//			],
-//			'loginAction'=>[
-//				'controller'=>'Users', 
-//				'action'=>'unauthorized',     
-//				'_ext'=>'json'],
-//			'authorize'=>['Users'],
-//			'authError'=>"Error"
-//		]);
-		
-		
+		$this->template = 'ajax';
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+		
+
+		$this->loadComponent('Auth',[
+			'authenticate' => [
+				'Form' => [
+					'fields' => ['username' => 'email', 'password'=>'password']
+				]
+			]
+			
+		]);
     }
 
     /**
