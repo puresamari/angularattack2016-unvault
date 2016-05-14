@@ -6,27 +6,27 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'LoginCtrl as login'
         })
         .state('app', {
-            url: '/app',
+            url: '/',
             template: require('./app/app.component.html'),
             controller: 'AppCtrl as app'
         })
         .state('app.home', {
-            url: '/home',
+            url: 'home',
             template: require('./home/home.component.html'),
             controller: 'HomeCtrl as home'
         })
         .state('app.market', {
-            url: '/market',
+            url: 'market',
             template: require('./market/market.component.html'),
             controller: 'MarketCtrl as market'
         })
         .state('app.cards', {
-            url: '/cards',
+            url: 'cards',
             template: require('./cards/cards.component.html'),
             controller: 'CardsCtrl as cards'
         })
         .state('app.user', {
-            url: '/user',
+            url: 'user',
             template: require('./user/user.component.html'),
             controller: 'UserCtrl as user'
         });
