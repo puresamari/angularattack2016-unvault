@@ -5,7 +5,7 @@ function RegisterCtrl($scope, Data) {
         "password ": "",
         "full_name": ""
     };
-    vm.sendReg = function(){
+    vm.send = function(){
         Data.send('register', vm.model, function (result) {
             alert('registered: ', result);
         });

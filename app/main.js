@@ -15,6 +15,7 @@ require('./main.config.js');
 
 // controller 
 
+require('./landing/landing.component.js');
 require('./login/login.component.js');
 require('./register/register.component.js');
 require('./app/app.component.js');

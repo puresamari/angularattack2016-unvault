@@ -1,1 +1,17 @@
-<md-button class="md-raised md-primary" ui-sref="app">Go to App</md-button>
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <h1>Login</h1>
+    </div>
+</md-toolbar>
+<md-content layout="column" flex layout-padding>
+    <md-input-container>
+        <label>Email</label>
+        <input ng-model="login.model.email" type="email">
+    </md-input-container>
+    <md-input-container>
+        <label>Password</label>
+        <input ng-model="login.model.password" type="password">
+    </md-input-container>
+    <md-button class="md-raised md-primary" ng-click="login.send()">Login</md-button>
+<!--    <md-button class="md-raised md-primary" ui-sref="app">Login</md-button>-->
+</md-content>

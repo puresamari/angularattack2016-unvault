@@ -13,6 +13,9 @@ app.factory('Data', function($http, $rootScope) {
             case 'general':
                 url = 'home.json';
                 break;
+            case 'logout':
+                url = 'users/logout';
+                break;
         }
         return $http({
                 method: 'GET',
@@ -25,10 +28,13 @@ app.factory('Data', function($http, $rootScope) {
     };
     
     service.send = function(e, data, _promise) {
-        var url = 'home.json';
+        var url = '';
         switch (e) {
             case 'register':
                 url = 'users/add';
+                break;
+            case 'login':
+                url = 'users/login';
                 break;
         }
         return $http({
@@ -47,8 +53,4 @@ app.factory('Data', function($http, $rootScope) {
 
 app.controller('MainCtrl', function(Data){
     var vm = this;
-    vm.user = {};
-    Data.get('general', function(result){
-        vm.user = result.data.user;
-    });
 });
