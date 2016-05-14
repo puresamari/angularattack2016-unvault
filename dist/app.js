@@ -69,16 +69,17 @@
 	__webpack_require__(18);
 	__webpack_require__(19);
 	__webpack_require__(20);
+	__webpack_require__(21);
 	
 	// directives
 	
-	__webpack_require__(21);
-	__webpack_require__(23);
-	__webpack_require__(25);
+	__webpack_require__(22);
+	__webpack_require__(24);
+	__webpack_require__(26);
 	
 	// general
 	
-	__webpack_require__(27);
+	__webpack_require__(28);
 
 /***/ },
 /* 1 */
@@ -916,7 +917,7 @@
 	app.factory('Data', function($http, $rootScope) {
 	    var service = {};
 	    
-	    service.get = function(e, _promise) {
+	    service.get = function(e, _promise, data) {
 	        var url = 'home.json';
 	        switch (e) {
 	            case 'general':
@@ -927,6 +928,12 @@
 	                break;
 	            case 'user':
 	                url = 'users.json';
+	                break;
+	            case 'card':
+	                url = data + '/card.json';
+	                break;
+	            case 'cards':
+	                url = '/cards.json';
 	                break;
 	        }
 	        var req = {
@@ -941,8 +948,27 @@
 	        return $http(req).then( _promise );
 	    };
 	    
-	    service.send = function(e, data, _promise) {
+	    service.delete = function(e, _promise, data) {
 	        var url = '';
+	        switch (e) {
+	            case 'card':
+	                url = data.selectedCard + 'delete-card.json';
+	                break;
+	        }
+	        var req = {
+	            method: 'DELETE',
+	            url: 'http://52.39.11.99/' + url,
+	            headers: {
+	                'accept': 'application/json'
+	            }
+	        };
+	        console.log('sending', req);
+	        return $http(req).then( _promise );
+	    };
+	    
+	    service.send = function(e, data, _promise) {
+	        var url = '',
+	            senddata = data;
 	        switch (e) {
 	            case 'register':
 	                url = 'users/add';
@@ -952,10 +978,32 @@
 	                break;
 	            case 'add-card':
 	                url = 'add-card.json';
+	                senddata = data;
 	                break;
 	        }
 	        var req = {
 	            method: 'POST',
+	            url: 'http://52.39.11.99/' + url,
+	            data: data,
+	            headers: {
+	                'accept': 'application/json'
+	            }
+	        };
+	        console.log('sending', req);
+	        return $http(req).then( _promise );
+	    };
+	    
+	    service.put = function(e, data, _promise) {
+	        var url = '',
+	            data = data;
+	        switch (e) {
+	            case 'update-card':
+	                url = data.selectedCard + '/update-card.json';
+	                data = data.model;
+	                break;
+	        }
+	        var req = {
+	            method: 'PUT',
 	            url: 'http://52.39.11.99/' + url,
 	            data: data,
 	            headers: {
@@ -1110,6 +1158,62 @@
 
 /***/ },
 /* 21 */
+/***/ function(module, exports) {
+
+	function ManageCardsCtrl($scope, Data) {
+	    var vm = this;
+	    
+	    vm.edit_enabled = true;
+	    
+	    vm.data = {
+	        'selectedCard': 0,
+	        'model': {
+	            "name": "test",
+	            "question": "Is testing good?",
+	            "answer": "TDD is the best"
+	        },
+	    }
+	    
+	    vm.cards = [
+	        {
+	            "id": 0,
+	            "name": "test",
+	        },
+	        {
+	            "id": 2,
+	            "name": "test2",
+	        },
+	    ];
+	    
+	    vm.loadCards = function(){
+	        Data.get('cards', function(response){
+	            vm.cards = response.data.cards;
+	        });
+	    };
+	    
+	    vm.update = function(){
+	        Data.put('update-card', vm.data, function(response){
+	            console.log('sending card returned', response);
+	        });
+	    };
+	    
+	    vm.delete = function(){
+	        Data.delete('card', function(response){
+	            console.log('sending card returned', response);
+	        }, vm.data);
+	    };
+	    
+	    vm.add = function(){
+	        Data.send('add-card', vm.data.model, function(response){
+	            console.log('sending card returned', response);
+	        });
+	    };
+	 }
+	
+	app.controller('ManageCardsCtrl', ManageCardsCtrl);
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function getNameFromState(statename){
@@ -1156,20 +1260,20 @@
 	        replace: true,
 	        controller: TabsCtrl,
 	        controllerAs: 'tabs',
-	        template: __webpack_require__(22),
+	        template: __webpack_require__(23),
 	    }
 	}
 	
 	app.directive('headerTabs', TabsDirective);
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = "<md-toolbar md-whiteframe=\"4\">\n    <div class=\"md-toolbar-tools\">\n        <div class=\"md-primary\"><h2>User {{app.user.full_name}}</h2></div>\n    </div>\n    <md-tabs md-stretch-tabs md-selected=\"tabs.selectedIndex\">\n        <md-tab ng-repeat=\"url in tabs.urls\" \n            ui-sref=\"app.{{url.url}}\" md-active=\"tabs.stateName == url.url\">\n            <md-icon \n                aria-label=\"{{ url.name }}\"\n                class=\"material-icons step\"\n                ng-class=\"it.size\">\n                {{url.icon}}\n            </md-icon>\n        </md-tab>\n    </md-tabs>\n</md-toolbar>"
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function CardDirective(){
@@ -1186,20 +1290,20 @@
 	        },
 	        controller: CardCtrl,
 	        controllerAs: 'card',
-	        template: __webpack_require__(24),
+	        template: __webpack_require__(25),
 	    }
 	}
 	
 	app.directive('card', CardDirective);
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = "<md-card>\n    <md-card-header>\n        <h3>{{card.data.name}}</h3>\n    </md-card-header>\n    <md-card-content>\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\n    </md-card-content>\n    <md-card-actions layout=\"row\" ng-show=\"card.state == 0\" layout-align=\"center center\">\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\n    </md-card-actions>\n    <md-card-actions layout=\"row\" ng-show=\"card.state == 1\" layout-align=\"center center\">\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\n    </md-card-actions>\n</md-card>\n"
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function GravatarDirective(){
@@ -1221,68 +1325,68 @@
 	        },
 	        controller: GravatarCtrl,
 	        controllerAs: 'gravatar',
-	        template: __webpack_require__(26),
+	        template: __webpack_require__(27),
 	    }
 	}
 	
 	app.directive('gravatar', GravatarDirective);
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports = "<img src=\"{{gravatar.src}}\">"
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	    $stateProvider
 	        .state('landing', {
 	            url: '/',
-	            template: __webpack_require__(28),
+	            template: __webpack_require__(29),
 	            controller: 'LandingCtrl as landing'
 	        })
 	        .state('login', {
 	            url: '/login',
-	            template: __webpack_require__(29),
+	            template: __webpack_require__(30),
 	            controller: 'LoginCtrl as login'
 	        })
 	        .state('register', {
 	            url: '/register',
-	            template: __webpack_require__(30),
+	            template: __webpack_require__(31),
 	            controller: 'RegisterCtrl as register'
 	        })
 	        .state('manage-cards', {
-	            url: '/add-card',
-	            template: __webpack_require__(31),
-	            controller: 'ManageCardCtrl as manageCard'
+	            url: '/manage-cards',
+	            template: __webpack_require__(32),
+	            controller: 'ManageCardsCtrl as manageCards'
 	        })
 	        .state('app', {
 	            abstract: true,
 	            url: '/app',
-	            template: __webpack_require__(32),
+	            template: __webpack_require__(33),
 	            controller: 'AppCtrl as app'
 	        })
 	        .state('app.home', {
 	            url: '',
-	            template: __webpack_require__(33),
+	            template: __webpack_require__(34),
 	            controller: 'HomeCtrl as home'
 	        })
 	        .state('app.market', {
 	            url: '/market',
-	            template: __webpack_require__(34),
+	            template: __webpack_require__(35),
 	            controller: 'MarketCtrl as market'
 	        })
 	        .state('app.cards', {
 	            url: '/cards',
-	            template: __webpack_require__(35),
+	            template: __webpack_require__(36),
 	            controller: 'CardsCtrl as cards'
 	        })
 	        .state('app.user', {
 	            url: '/user',
-	            template: __webpack_require__(36),
+	            template: __webpack_require__(37),
 	            controller: 'UserCtrl as user'
 	        });
 	    $urlRouterProvider.otherwise('/app');
@@ -1294,55 +1398,55 @@
 	});
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <img src=\"../assets/img/logo.png\" flex=\"10\">\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\n    <p flex layout=\"row\">\n        Unvault is here to open / unleash your mind and learn new stuff\n    </p>\n    <div layout=\"row\">\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\n    </div>\n    <div layout=\"row\">\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\n    </div>\n</md-content>"
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>Login</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <md-input-container>\n        <label>Email</label>\n        <input ng-model=\"login.model.email\" type=\"email\">\n    </md-input-container>\n    <md-input-container>\n        <label>Password</label>\n        <input ng-model=\"login.model.password\" type=\"password\">\n    </md-input-container>\n    <md-button class=\"md-raised md-primary\" ng-click=\"login.send()\">Login</md-button>\n<!--    <md-button class=\"md-raised md-primary\" ui-sref=\"app\">Login</md-button>-->\n</md-content>"
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>Login</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <md-input-container>\n        <label>Email</label>\n        <input ng-model=\"register.model.email\" type=\"email\">\n    </md-input-container>\n    <md-input-container>\n        <label>Password</label>\n        <input ng-model=\"register.model.password\" type=\"password\">\n    </md-input-container>\n    <md-input-container>\n        <label>Full Name</label>\n        <input ng-model=\"register.model.full_name\">\n    </md-input-container>\n    <md-button ng-click=\"register.send()\">Submit</md-button>\n</md-content>\n"
 
 /***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>manage Cards</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <h1 layout=\"row\">Add card</h1>\n    <md-input-container layout=\"row\">\n        <label>Email</label>\n        <input ng-model=\"register.model.email\" type=\"email\">\n    </md-input-container>\n    <md-input-container layout=\"row\">\n        <label>Password</label>\n        <input ng-model=\"register.model.password\" type=\"password\">\n    </md-input-container>\n    <md-input-container layout=\"row\">\n        <label>Full Name</label>\n        <input ng-model=\"register.model.full_name\">\n    </md-input-container>\n    <md-button ng-click=\"register.send()\">Submit</md-button>\n</md-content>"
-
-/***/ },
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "<header-tabs></header-tabs>\n<md-content ui-view layout=\"column\" flex layout-padding></md-content>"
+	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>manage Cards</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <div layout=\"row\">\n        <md-input-container flex=\"50\">\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.selectedCard\" md-on-open=\"loadUsers()\" ng-enabled=\"manageCards.edit\">\n                <md-option ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.name}}</md-option>\n            </md-select>\n        </md-input-container>\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\n            <span layout=\"column\">Add</span>\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit\" aria-label=\"edit/add\"></md-switch>\n            <span layout=\"column\">Edit</span>\n        </md-input-container>\n    </div>\n    <md-card>\n        <h1 layout=\"row\">Add card</h1>\n        <md-input-container layout=\"row\">\n            <label>Name</label>\n            <input ng-model=\"manageCards.data.model.name\">\n        </md-input-container>\n        <md-input-container layout=\"row\">\n            <label>Password</label>\n            <input ng-model=\"manageCards.data.model.question\">\n        </md-input-container>\n        <md-input-container layout=\"row\">\n            <label>Full Name</label>\n            <input ng-model=\"manageCards.data.model.answer\">\n        </md-input-container>\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit\">Update</md-button>\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit\">Add</md-button>\n    </md-card>\n    <md-card>\n        <h1 layout=\"row\">Delete card</h1>\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\n    </md-card>\n</md-content>"
 
 /***/ },
 /* 33 */
 /***/ function(module, exports) {
 
-	module.exports = "<card ng-repeat=\"card in home.data.cards\" data=\"card\"></card>"
+	module.exports = "<header-tabs></header-tabs>\n<md-content ui-view layout=\"column\" flex layout-padding></md-content>"
 
 /***/ },
 /* 34 */
 /***/ function(module, exports) {
 
-	module.exports = "MARKET"
+	module.exports = "<card ng-repeat=\"card in home.data.cards\" data=\"card\"></card>"
 
 /***/ },
 /* 35 */
 /***/ function(module, exports) {
 
-	module.exports = "<card></card>\n<card></card>\n<card></card>\n<card></card>\n<card></card>\n<card></card>"
+	module.exports = "MARKET"
 
 /***/ },
 /* 36 */
+/***/ function(module, exports) {
+
+	module.exports = "<card></card>\n<card></card>\n<card></card>\n<card></card>\n<card></card>\n<card></card>"
+
+/***/ },
+/* 37 */
 /***/ function(module, exports) {
 
 	module.exports = "<md-card>\n    <gravatar email=\"app.user.email\" size=\"600\"></gravatar>\n    <md-card-content>\n        Full Name: {{app.user.full_name}}\n    </md-card-content>\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\n        <md-button>Save</md-button>\n    </md-card-actions>\n</md-card>\n"
