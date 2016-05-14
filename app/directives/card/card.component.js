@@ -1,4 +1,3 @@
-
 function CardDirective(){
     function CardCtrl($scope) {
         var vm = this;

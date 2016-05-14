@@ -11,15 +11,12 @@ require('../node_modules/angular-material/layouts/angular-material.layouts.min.c
 
 window.app = angular.module('unvault', ['ui.router', 'ngMaterial', 'ngAnimate']);
 
-app.config(function($mdThemingProvider) {
-    $mdThemingProvider.theme('default')
-        .primaryPalette('blue')
-        .accentPalette('yellow');
-    });
+require('./main.config.js');
 
 // controller 
 
 require('./login/login.component.js');
+require('./register/register.component.js');
 require('./app/app.component.js');
 require('./home/home.component.js');
 require('./user/user.component.js');
@@ -30,6 +27,7 @@ require('./market/market.component.js');
 
 require('./directives/tabs/tabs.component.js');
 require('./directives/card/card.component.js');
+require('./directives/gravatar/gravatar.component.js');
 
 // general
 

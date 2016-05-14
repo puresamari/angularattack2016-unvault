@@ -1,9 +1,8 @@
 <md-toolbar md-whiteframe="4">
-    <span flex></span>
-    <h2 class="md-toolbar-tools md-toolbar-tools-bottom md-uppercase">
-        <span class="md-flex">{{tabs.stateName}}</span>
-    </h2>
-    <md-tabs md-stretch-tabs md-selected="selectedIndex">
+    <div class="md-toolbar-tools">
+        <div class="md-primary"><h2>User {{main.user.full_name}}</h2></div>
+    </div>
+    <md-tabs md-stretch-tabs md-selected="tabs.selectedIndex">
         <md-tab ng-repeat="url in tabs.urls" 
             ui-sref="app.{{url.url}}" md-active="tabs.stateName == url.url">
             <md-icon 
