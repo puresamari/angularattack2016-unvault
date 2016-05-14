@@ -11,6 +11,11 @@ require('../node_modules/angular-material/layouts/angular-material.layouts.min.c
 
 window.app = angular.module('unvault', ['ui.router', 'ngMaterial', 'ngAnimate']);
 
+app.config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('blue')
+        .accentPalette('yellow');
+    });
 // controller 
 
 require('./login/login.component.js');
