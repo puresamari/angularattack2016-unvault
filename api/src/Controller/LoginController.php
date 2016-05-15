@@ -70,15 +70,14 @@ class LoginController extends AppController
 			// return Auth token
 			$this->response->header('Authorization', 'Bearer ' . $token);
 			
-//			print_r($this->request->session()->read());
 
 
 
 		} catch (UnauthorizedException $e) {            
 			throw new UnauthorizedException($e->getMessage(),401);   
 		}           
-		$this->set('user', $this->Auth->user());        
-		$this->set('_serialize', ['user']);
+		$this->set('userSession', $this->request->session()->read());        
+		$this->set('_serialize', ['userSession']);
 	}
 	/**
      * Logout user
