@@ -1,5 +1,7 @@
-<md-toolbar>
+<md-toolbar md-whiteframe="4">
     <div class="md-toolbar-tools">
+        <md-icon class="material-icons" aria-label="back" ui-sref="landing"> arrow_back </md-icon>
+        <span flex></span>
         <h1>Login</h1>
     </div>
 </md-toolbar>
@@ -13,5 +15,4 @@
         <input ng-model="login.model.password" type="password">
     </md-input-container>
     <md-button class="md-raised md-primary" ng-click="login.send()">Login</md-button>
-<!--    <md-button class="md-raised md-primary" ui-sref="app">Login</md-button>-->
 </md-content>

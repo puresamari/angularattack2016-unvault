@@ -1,1 +1,6 @@
-<card ng-repeat="card in home.data.cards" id="card.id"></card>
+<md-subheader class="md-primary">Your cards</md-subheader>
+<div layout="row" layout-xs="column" layout-wrap>
+    <card ng-repeat="card in home.cards" id="card.id"></card>
+</div>
+
+{{home.data}}

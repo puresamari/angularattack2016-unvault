@@ -6,7 +6,7 @@ function LoginCtrl($scope, $rootScope, Data, Error) {
         'password': '',
     };
     
-    function setUser(user) {              
+    function setUser(user) {
         localStorage.setItem('token', 'Bearer ' + user.token);
         localStorage.setItem('id', user.id);
     }

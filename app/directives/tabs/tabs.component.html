@@ -1,12 +1,15 @@
 <md-toolbar md-whiteframe="4">
     <div class="md-toolbar-tools">
-        <div flex="10" ui-sref="landing">
+        <md-button class="md-mini" aria-label="Logo" ui-sref="landing">
             <img id="logo" src="../assets/img/logo.png">
-        </div>
-        <div class="md-primary">
-            <h2>User {{app.user.full_name}}</h2>
-        </div>
+        </md-button>
+        <h1 class="md-primary" flex="1">User {{main.user.full_name}}</h1>
         <span flex></span>
+        <md-tabs class="md-primary" show-gt-md flex-gt-md md-align-tabs="bottom" md-selected="tabs.selectedIndex">
+            <md-tab ng-repeat="url in tabs.urls" ui-sref="app.{{url.state}}" md-active="tabs.stateName == url.state">
+                {{url.title}}
+            </md-tab>
+        </md-tabs>
         <md-menu md-position-mode="target-right target">
             <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                 <md-icon class="material-icons"> more_vert </md-icon>
@@ -18,10 +21,16 @@
                         {{tool.title}}
                     </md-button>
                 </md-menu-item>
+                <md-menu-item ng-repeat="tool in tabs.tools">
+                    <md-button ng-click="main.logout()">
+                        <md-icon class="material-icons"> </md-icon>
+                        logut
+                    </md-button>
+                </md-menu-item>
             </md-menu-content>
         </md-menu>
     </div>
-    <md-tabs md-stretch-tabs md-selected="tabs.selectedIndex">
+    <md-tabs hide-gt-md md-stretch-tabs md-selected="tabs.selectedIndex">
         <md-tab ng-repeat="url in tabs.urls" ui-sref="app.{{url.state}}" md-active="tabs.stateName == url.state">
             <md-icon aria-label="{{ url.name }}" class="material-icons">
                 {{url.icon}}
