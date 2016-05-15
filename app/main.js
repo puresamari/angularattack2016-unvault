@@ -1,3 +1,7 @@
+//stye
+
+require('./main.scss');
+
 // angular dependencies
 
 require('../node_modules/angular/angular.min.js');
