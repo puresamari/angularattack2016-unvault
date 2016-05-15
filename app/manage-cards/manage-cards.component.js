@@ -1,4 +1,4 @@
-function ManageCardsCtrl($scope, $rootScope, Data) {
+function ManageCardsCtrl($scope, $rootScope, Data, Error) {
     var vm = this;
     
     vm.edit_enabled = false;
@@ -47,8 +47,9 @@ function ManageCardsCtrl($scope, $rootScope, Data) {
     
     vm.add = function(){
         Data.send('add-card', vm.data.model, function(response){
-            console.log('sending card returned', response);
+            Error.info('Added', 'Card ' + response.data.name + ' has been added');
         }, function(result) {
+            Error.alert('Error', 'An error has accured while adding a Card');
             console.error('add error ', result);   
         });
     };

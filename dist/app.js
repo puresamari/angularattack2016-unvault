@@ -1610,13 +1610,13 @@
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.data.user.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n<md-subheader class=\"md-primary\">Have a look at: </md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>"
+	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in home.data.user.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n<md-subheader class=\"md-primary\">Have a look at: </md-subheader>\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, market.tags)\"></card>\r\n</div>"
+	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\"layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, market.tags)\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */

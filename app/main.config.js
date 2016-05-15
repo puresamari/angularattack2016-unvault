@@ -19,6 +19,18 @@ app.service('Error', function($mdDialog, $mdMedia) {
         );
     };
     
+    serv.info = function (title, message) {
+        $mdDialog.show(
+            $mdDialog.alert({
+                parent: angular.element(document.documentElement),
+                title: title,
+                textContent: message,
+                ok: 'Ok',
+                hasBackdrop: false,
+                ariaLabel: title
+            }));
+    };
+    
     return serv;
 });
 app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
