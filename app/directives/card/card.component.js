@@ -1,14 +1,19 @@
-function CardDirective(){
+function CardDirective(Data){
     function CardCtrl($scope) {
         var vm = this;
-        vm.data = $scope.data;
         vm.state = 0;
+        
+        vm.data = null;
+        
+        Data.get('card', function(result){
+            vm.data = result.data.card;
+        }, $scope.id)
     }
     
     return {
         restrict: 'E',
         scope: {
-            data: '=data'
+            id: '=id'
         },
         replace: true,
         controller: CardCtrl,

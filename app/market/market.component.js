@@ -4,6 +4,7 @@ function MarketCtrl($scope, Data) {
     
     Data.get('cards', function(response){
         vm.cards = response.data.cards;
+        console.log('cards', vm.cards);
     });
  }
 
