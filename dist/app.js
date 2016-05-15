@@ -1007,6 +1007,9 @@
 	            case 'user-cards':
 	                url = localStorage.id + '/card'
 	                break;
+	            case 'tags':
+	                url = 'tags'
+	                break;
 	        }
 	        var req = {
 	//            method: 'POST',
@@ -1271,8 +1274,22 @@
 	    var vm = this;
 	    vm.cards = null;
 	    
+	    vm.checkCardTags = function(tag, card) {
+	        var retval = false;
+	        if(tag == undefined) return true;
+	        angular.forEach(card, function(value, key) {
+	            console.log(value.id, tag.id)
+	            if(value.id == tag.id) retval = true; 
+	        });
+	        return retval;
+	    };
+	    
 	    Data.get('cards', null, function(response){
 	        vm.cards = response.data.cards;
+	    });
+	    
+	    Data.get('tags', null, function(response){
+	        vm.tags = response.data.tags;
 	    });
 	 }
 	
@@ -1406,7 +1423,7 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">User {{main.user.full_name}}</h1>\r\n        <span flex></span>\r\n        <md-tabs class=\"md-primary\" show-gt-md flex-gt-md md-align-tabs=\"bottom\" md-selected=\"tabs.selectedIndex\">\r\n            <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n                {{url.title}}\r\n            </md-tab>\r\n        </md-tabs>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"main.logout()\">\r\n                        <md-icon class=\"material-icons\"> </md-icon>\r\n                        logut\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs hide-gt-md md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>\r\n"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex flex-gt-md=\"1\">User {{main.user.full_name}}</h1>\r\n        <span flex hide show-gt-md></span>\r\n        <md-tabs class=\"md-primary\" show-gt-md flex-gt-md md-align-tabs=\"bottom\" md-selected=\"tabs.selectedIndex\">\r\n            <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n                {{url.title}}\r\n            </md-tab>\r\n        </md-tabs>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"main.logout()\">\r\n                        <md-icon class=\"material-icons\"> </md-icon>\r\n                        logut\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs hide-gt-md md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>"
 
 /***/ },
 /* 26 */
@@ -1599,7 +1616,7 @@
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>\r\n</div>"
+	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, market.tags)\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */
