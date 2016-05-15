@@ -1001,6 +1001,12 @@
 	            case 'logout':
 	                url = 'login'
 	                break;
+	            case 'home':
+	                url = 'home.json'
+	                break;
+	            case 'user-cards':
+	                url = localStorage.id + '/card'
+	                break;
 	        }
 	        var req = {
 	//            method: 'POST',
@@ -1029,7 +1035,8 @@
 	                break;
 	        }
 	        var req = {
-	            method: 'DELETE',
+	            method: 'GET',
+	//            method: 'DELETE',
 	            url: 'http://52.39.11.99/' + url,
 	            headers: {
 	                'accept': 'application/json'
@@ -1054,6 +1061,14 @@
 	                break;
 	            case 'add-card':
 	                url = 'add-card.json';
+	                senddata = data;
+	                break;
+	            case 'add-card':
+	                url = 'add-card.json';
+	                senddata = data;
+	                break;
+	            case 'user-add-card':
+	                url = 'user-add-card.json';
 	                senddata = data;
 	                break;
 	        }
@@ -1115,13 +1130,12 @@
 	    };
 	    
 	    function checkUser() {
-	//        console.log('checking user');
 	        Data.get('user', null, function(response){
-	            console.log('app user check: ', response);
 	            var logout = response.data.user == null;
 	            if(logout) {
 	                vm.logout();
 	            }
+	            localStorage.setItem('id', response.data.user.id);
 	            vm.user = response.data.user;
 	        }, function(result){
 	            console.error('Error while checking user', result);
@@ -1156,7 +1170,6 @@
 	    function setUser(user) {
 	        localStorage.setItem('token', 'Bearer ' + user.token);
 	        localStorage.setItem('id', user.id);
-	        console.log('asdf', user.token, localStorage.token);
 	    }
 	    
 	    vm.send = function(){
@@ -1209,9 +1222,14 @@
 	function HomeCtrl($scope, Data) {
 	    var vm = this;
 	    vm.data = null;
+	    vm.cards = null;
 	    
 	    Data.get('home', null, function(response){
 	        vm.data = response.data;
+	    });
+	    
+	    Data.get('user-cards', null, function(response){
+	        vm.cards = response.data;
 	    });
 	 }
 	
@@ -1377,7 +1395,7 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <div flex=\"10\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </div>\r\n        <div class=\"md-primary\">\r\n            <h2>User {{app.user.full_name}}</h2>\r\n        </div>\r\n        <span flex></span>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"main.logout()\">\r\n                        <md-icon class=\"material-icons\"> </md-icon>\r\n                        logut\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>\r\n"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">User {{main.user.full_name}}</h1>\r\n        <span flex></span>\r\n        <md-tabs class=\"md-primary\" show-gt-md flex-gt-md md-align-tabs=\"bottom\" md-selected=\"tabs.selectedIndex\">\r\n            <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n                {{url.title}}\r\n            </md-tab>\r\n        </md-tabs>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"main.logout()\">\r\n                        <md-icon class=\"material-icons\"> </md-icon>\r\n                        logut\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs hide-gt-md md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>\r\n"
 
 /***/ },
 /* 26 */
@@ -1389,6 +1407,16 @@
 	        vm.state = 0;
 	        
 	        vm.data = null;
+	        
+	        vm.userAddCard = function() {
+	            console.log(vm.data)
+	            Data.send('user-add-card', {
+	                'user-id': localStorage.id,
+	                'card-id': vm.data.id,
+	            }, function(){
+	                
+	            });
+	        };
 	        
 	        Data.get('card', $scope.id, function(result){
 	            vm.data = result.data.card;
@@ -1420,7 +1448,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div flex-gt-sm=\"33\" flex-gt-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-margin=\"4\">\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button flex class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button flex=\"50\" class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button flex=\"50\" class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
+	module.exports = "<div flex=\"33\" flex-gt-sm=\"50\" flex-gt-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
 /* 28 */
@@ -1521,25 +1549,25 @@
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <div flex=\"10\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </div>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n        Unvault is here to open / unleash your mind and learn new stuff\r\n    </p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\r\n    </div>\r\n</md-content>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n        Unvault is here to open / unleash your mind and learn new stuff\r\n    </p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\r\n    </div>\r\n</md-content>"
 
 /***/ },
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <h1>Login</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <md-input-container>\r\n        <label>Email</label>\r\n        <input ng-model=\"login.model.email\" type=\"email\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Password</label>\r\n        <input ng-model=\"login.model.password\" type=\"password\">\r\n    </md-input-container>\r\n    <md-button class=\"md-raised md-primary\" ng-click=\"login.send()\">Login</md-button>\r\n<!--    <md-button class=\"md-raised md-primary\" ui-sref=\"app\">Login</md-button>-->\r\n</md-content>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-icon class=\"material-icons\" aria-label=\"back\" ui-sref=\"landing\"> arrow_back </md-icon>\r\n        <span flex></span>\r\n        <h1>Login</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <md-input-container>\r\n        <label>Email</label>\r\n        <input ng-model=\"login.model.email\" type=\"email\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Password</label>\r\n        <input ng-model=\"login.model.password\" type=\"password\">\r\n    </md-input-container>\r\n    <md-button class=\"md-raised md-primary\" ng-click=\"login.send()\">Login</md-button>\r\n</md-content>"
 
 /***/ },
 /* 33 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <h1>Register new Account</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <md-input-container>\r\n        <label>Email</label>\r\n        <input ng-model=\"register.model.email\" type=\"email\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Password</label>\r\n        <input ng-model=\"register.model.password\" type=\"password\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Full Name</label>\r\n        <input ng-model=\"register.model.full_name\">\r\n    </md-input-container>\r\n    <md-button ng-click=\"register.send()\">Submit</md-button>\r\n</md-content>\r\n"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-icon class=\"material-icons\" aria-label=\"back\" ui-sref=\"landing\"> arrow_back </md-icon>\r\n        <span flex></span>\r\n        <h1>Register new Account</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <md-input-container>\r\n        <label>Email</label>\r\n        <input ng-model=\"register.model.email\" type=\"email\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Password</label>\r\n        <input ng-model=\"register.model.password\" type=\"password\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Full Name</label>\r\n        <input ng-model=\"register.model.full_name\">\r\n    </md-input-container>\r\n    <md-button ng-click=\"register.send()\">Submit</md-button>\r\n</md-content>\r\n"
 
 /***/ },
 /* 34 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <div flex=\"10\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\" style=\"float:left\">\r\n        </div>\r\n        <h1>manage Cards</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">manage Cards</h1>\r\n        <span flex></span>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>"
 
 /***/ },
 /* 35 */
@@ -1551,13 +1579,13 @@
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<card ng-repeat=\"card in home.data.cards\" id=\"card.id\"></card>"
+	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n{{home.data}}"
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<card id=\"0\"></card>\r\n<card id=\"0\"></card>\r\n<card id=\"0\"></card>\r\n<card id=\"0\"></card>\r\n<card id=\"0\"></card>\r\n<!--<card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>-->"
+	module.exports = "<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */
