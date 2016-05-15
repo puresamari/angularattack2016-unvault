@@ -6,18 +6,18 @@
 <md-content layout="column" flex layout-padding>
     <div layout="row">
         <md-input-container flex="50">
-            <md-select placeholder="Select a card" ng-model="manageCards.selectedCard" md-on-open="loadUsers()" ng-enabled="manageCards.edit">
-                <md-option ng-repeat="card in manageCards.cards" ng-value="card.id">{{card.name}}</md-option>
+            <md-select placeholder="Select a card" ng-model="manageCards.data.selectedCard" md-on-open="manageCards.loadCards()" ng-change="manageCards.updateModel()" ng-enabled="manageCards.edit">
+                <md-option ng-click="manageCards.updateModel()" ng-repeat="card in manageCards.cards" ng-value="card.id">{{card.id}} | {{card.name}}</md-option>
             </md-select>
         </md-input-container>
         <md-input-container flex="50" layout="row" layout-align="center center">
             <span layout="column">Add</span>
-            <md-switch layout="column" flex ng-model="manageCards.edit" aria-label="edit/add"></md-switch>
+            <md-switch layout="column" flex ng-model="manageCards.edit_enabled" aria-label="edit/add" ng-change="manageCards.updateModel()"></md-switch>
             <span layout="column">Edit</span>
         </md-input-container>
     </div>
     <md-card>
-        <h1 layout="row">Add card</h1>
+        <h1 layout="row">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>
         <md-input-container layout="row">
             <label>Name</label>
             <input ng-model="manageCards.data.model.name">
@@ -30,8 +30,8 @@
             <label>Full Name</label>
             <input ng-model="manageCards.data.model.answer">
         </md-input-container>
-        <md-button ng-click="manageCards.update()" ng-show="manageCards.edit">Update</md-button>
-        <md-button ng-click="manageCards.add()" ng-show="!manageCards.edit">Add</md-button>
+        <md-button ng-click="manageCards.update()" ng-show="manageCards.edit_enabled">Update</md-button>
+        <md-button ng-click="manageCards.add()" ng-show="!manageCards.edit_enabled">Add</md-button>
     </md-card>
     <md-card>
         <h1 layout="row">Delete card</h1>

@@ -1,27 +1,27 @@
-function ManageCardsCtrl($scope, Data) {
+function ManageCardsCtrl($scope, $rootScope, Data) {
     var vm = this;
     
-    vm.edit_enabled = true;
+    vm.edit_enabled = false;
     
     vm.data = {
         'selectedCard': 0,
-        'model': {
-            "name": "test",
-            "question": "Is testing good?",
-            "answer": "TDD is the best"
-        },
     }
     
-    vm.cards = [
-        {
-            "id": 0,
-            "name": "test",
-        },
-        {
-            "id": 2,
-            "name": "test2",
-        },
-    ];
+    vm.updateModel = function(){
+        if(vm.edit_enabled) {
+            Data.get('card', function(response){
+                vm.data.model = response.data.card;
+            }, vm.data.selectedCard);
+        } else {
+            vm.data.model = {
+                "name": "",
+                "question": "",
+                "answer": ""
+            };
+        }
+    };
+    
+    vm.cards = [];
     
     vm.loadCards = function(){
         Data.get('cards', function(response){
