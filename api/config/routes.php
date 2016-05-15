@@ -87,7 +87,6 @@ Router::scope('/', function (RouteBuilder $routes) {
 	$routes->connect(  '/forbiden', ['controller' => 'Pages', 'action'=>'forbiden']); 
 	$routes->connect(  '/unauthorized', ['controller' => 'Pages', 'action'=>'unauthorized']);
 	
-//	$routes->connect('/login', ['controller' => 'Users', 'action' => 'login', "_ext" => "json"]);
 	
     /**
      * Connect catchall routes for all controllers.
@@ -109,9 +108,9 @@ Router::scope('/', function (RouteBuilder $routes) {
 });
 
 // LOGIN Routes
-Router::scope('/login',  ['controller' => 'Login'], function($routes) {    
-	$routes->connect(  '/', ['action'=>'index',  '_ext'=>'json','[method]'=>'POST']); 
-	$routes->connect(  '/', ['action'=>'logout', '_ext'=>'json','[method]'=>'DELETE']);         
+Router::scope('/',  ['controller' => 'Login'], function($routes) {    
+	$routes->connect(  '/login', ['action'=>'index',  '_ext'=>'json','[method]'=>'POST']); 
+	$routes->connect(  '/logout', ['action'=>'logout', '_ext'=>'json','[method]'=>'GET']);         
 });  
 
 
