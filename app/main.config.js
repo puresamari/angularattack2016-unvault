@@ -47,6 +47,12 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
             case 'logout':
                 url = 'login'
                 break;
+            case 'home':
+                url = 'home.json'
+                break;
+            case 'user-cards':
+                url = localStorage.id + '/card'
+                break;
         }
         var req = {
 //            method: 'POST',
@@ -75,7 +81,8 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
                 break;
         }
         var req = {
-            method: 'DELETE',
+            method: 'GET',
+//            method: 'DELETE',
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json'
@@ -100,6 +107,14 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
                 break;
             case 'add-card':
                 url = 'add-card.json';
+                senddata = data;
+                break;
+            case 'add-card':
+                url = 'add-card.json';
+                senddata = data;
+                break;
+            case 'user-add-card':
+                url = 'user-add-card.json';
                 senddata = data;
                 break;
         }
@@ -166,6 +181,7 @@ app.controller('MainCtrl', function(Data, $rootScope){
             if(logout) {
                 vm.logout();
             }
+            localStorage.setItem('id', response.data.user.id);
             vm.user = response.data.user;
         }, function(result){
             console.error('Error while checking user', result);
