@@ -9,9 +9,9 @@ function ManageCardsCtrl($scope, $rootScope, Data) {
     
     vm.updateModel = function(){
         if(vm.edit_enabled) {
-            Data.get('card', function(response){
+            Data.get('card', vm.data.selectedCard, function(response){
                 vm.data.model = response.data.card;
-            }, vm.data.selectedCard);
+            });
         } else {
             vm.data.model = {
                 "name": "",
@@ -24,7 +24,7 @@ function ManageCardsCtrl($scope, $rootScope, Data) {
     vm.cards = [];
     
     vm.loadCards = function(){
-        Data.get('cards', function(response){
+        Data.get('cards', null, function(response){
             vm.cards = response.data.cards;
         });
     };

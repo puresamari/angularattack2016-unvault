@@ -2,7 +2,7 @@ function HomeCtrl($scope, Data) {
     var vm = this;
     vm.data = null;
     
-    Data.get('home', function(response){
+    Data.get('home', null, function(response){
         vm.data = response.data;
     });
  }

@@ -1,4 +1,4 @@
-function RegisterCtrl($scope, Data) {
+function RegisterCtrl($scope, Data, $state) {
     var vm = this;
     vm.model = {
         "email": "",
@@ -7,7 +7,8 @@ function RegisterCtrl($scope, Data) {
     };
     vm.send = function(){
         Data.send('register', vm.model, function (response) {
-            alert('registered: ', response);
+            $state.go('login');
+            console.log(response);
         });
     };
 }

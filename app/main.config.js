@@ -4,20 +4,42 @@ app.config(function($mdThemingProvider) {
         .accentPalette('yellow');
 });
 
-app.factory('Data', function($http, $rootScope) {
+app.service('Error', function($mdDialog, $mdMedia) {
+    var serv = {}
+    
+    serv.alert = function(title, message) {
+        var customFullscreen = $mdMedia('xs') || $mdMedia('sm');
+        $mdDialog.show(
+            $mdDialog.alert()
+                .parent(angular.element(document.documentElement))
+                .title(title)
+                .textContent(message)
+                .ariaLabel(title)
+                .ok('OK')
+        );
+    };
+    
+    return serv;
+});
+app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
     var service = {};
     
-    service.get = function(e, _promise, data) {
+    function errorFn(response){
+        Error.alert('Error', 'Encountered Error: ' + response.message);
+        console.log('error: ', response);
+    }
+    
+    service.get = function(e, data, _promise, _error) {
         var url = 'home.json';
         switch (e) {
             case 'general':
                 url = 'home.json';
                 break;
             case 'logout':
-                url = 'users/logout';
+                url = 'logout';
                 break;
             case 'user':
-                url = 'users.json';
+                url = localStorage.id + '/users.json';
                 break;
             case 'card':
                 url = data + '/card.json';
@@ -27,18 +49,22 @@ app.factory('Data', function($http, $rootScope) {
                 break;
         }
         var req = {
+//            method: 'POST',
             method: 'GET',
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json',
-//                'Authorization': localStorage.token
+                'Authorization': localStorage.token
             }
         };
-        console.log('getting', req)
-        return $http(req).then( _promise );
+        console.log('getting', req);
+        if(_error == undefined) {
+            _error = errorFn;
+        }
+        return $http(req).then( _promise , _error);
     };
     
-    service.delete = function(e, _promise, data) {
+    service.delete = function(e, _promise, data, _error) {
         var url = '';
         switch (e) {
             case 'card':
@@ -46,25 +72,29 @@ app.factory('Data', function($http, $rootScope) {
                 break;
         }
         var req = {
-            method: 'DELETE',
+            method: 'POST',
+//            method: 'DELETE',
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json'
             }
         };
         console.log('deleting', req);
-        return $http(req).then( _promise );
+        if(_error == undefined) {
+            _error = errorFn;
+        }
+        return $http(req).then( _promise , _error );
     };
     
-    service.send = function(e, data, _promise) {
+    service.send = function(e, data, _promise, _error) {
         var url = '',
             senddata = data;
         switch (e) {
             case 'register':
-                url = 'users/add';
+                url = 'users/add.json';
                 break;
             case 'login':
-                url = 'users/login';
+                url = 'login.json';
                 break;
             case 'add-card':
                 url = 'add-card.json';
@@ -79,11 +109,13 @@ app.factory('Data', function($http, $rootScope) {
                 'accept': 'application/json'
             }
         };
-        console.log('sending', req);
-        return $http(req).then( _promise );
+        if(_error == undefined) {
+            _error = errorFn;
+        }
+        return $http(req).then( _promise, _error );
     };
     
-    service.put = function(e, data, _promise) {
+    service.put = function(e, data, _promise, _error) {
         var url = '',
             data = data;
         switch (e) {
@@ -93,7 +125,8 @@ app.factory('Data', function($http, $rootScope) {
                 break;
         }
         var req = {
-            method: 'PUT',
+            method: 'POST',
+//            method: 'PUT',
             url: 'http://52.39.11.99/' + url,
             data: data,
             headers: {
@@ -101,7 +134,10 @@ app.factory('Data', function($http, $rootScope) {
             }
         };
         console.log('putting', req);
-        return $http(req).then( _promise );
+        if(_error == undefined) {
+            _error = errorFn;
+        }
+        return $http(req).then( _promise , _error );
     };
     
     return service;

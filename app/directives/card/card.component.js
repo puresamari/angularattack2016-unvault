@@ -5,9 +5,9 @@ function CardDirective(Data){
         
         vm.data = null;
         
-        Data.get('card', function(result){
+        Data.get('card', $scope.id, function(result){
             vm.data = result.data.card;
-        }, $scope.id)
+        })
     }
     
     return {
