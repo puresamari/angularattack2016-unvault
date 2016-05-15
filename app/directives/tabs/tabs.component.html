@@ -1,14 +1,26 @@
 <md-toolbar md-whiteframe="4">
     <div class="md-toolbar-tools">
-        <div class="md-primary"><h2>User {{app.user.full_name}}</h2></div>
+        <div class="md-primary">
+            <h2>User {{app.user.full_name}}</h2>
+        </div>
+        <span flex></span>
+        <md-menu md-position-mode="target-right target">
+            <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                <md-icon class="material-icons"> more_vert </md-icon>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item ng-repeat="tool in tabs.tools">
+                    <md-button ng-click="ctrl.announceClick($index)" ui-sref="{{tool.state}}">
+                        <md-icon class="material-icons"> {{tool.icon}} </md-icon>
+                        {{tool.title}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
     </div>
     <md-tabs md-stretch-tabs md-selected="tabs.selectedIndex">
-        <md-tab ng-repeat="url in tabs.urls" 
-            ui-sref="app.{{url.url}}" md-active="tabs.stateName == url.url">
-            <md-icon 
-                aria-label="{{ url.name }}"
-                class="material-icons step"
-                ng-class="it.size">
+        <md-tab ng-repeat="url in tabs.urls" ui-sref="app.{{url.state}}" md-active="tabs.stateName == url.state">
+            <md-icon aria-label="{{ url.name }}" class="material-icons">
                 {{url.icon}}
             </md-icon>
         </md-tab>
