@@ -34,7 +34,7 @@ app.factory('Data', function($http, $rootScope) {
 //                'Authorization': localStorage.token
             }
         };
-        console.log('requesting', req)
+        console.log('getting', req)
         return $http(req).then( _promise );
     };
     
@@ -42,7 +42,7 @@ app.factory('Data', function($http, $rootScope) {
         var url = '';
         switch (e) {
             case 'card':
-                url = data.selectedCard + 'delete-card.json';
+                url = data.selectedCard + '/delete-card.json';
                 break;
         }
         var req = {
@@ -52,7 +52,7 @@ app.factory('Data', function($http, $rootScope) {
                 'accept': 'application/json'
             }
         };
-        console.log('sending', req);
+        console.log('deleting', req);
         return $http(req).then( _promise );
     };
     
@@ -100,7 +100,7 @@ app.factory('Data', function($http, $rootScope) {
                 'accept': 'application/json'
             }
         };
-        console.log('sending', req);
+        console.log('putting', req);
         return $http(req).then( _promise );
     };
     
