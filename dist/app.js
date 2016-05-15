@@ -1149,9 +1149,13 @@
 /* 20 */
 /***/ function(module, exports) {
 
-	function MarketCtrl($scope) {
+	function MarketCtrl($scope, Data) {
 	    var vm = this;
-	    vm.test = 'test20';
+	    vm.cards = null;
+	    
+	    Data.get('cards', function(response){
+	        vm.cards = response.data.cards;
+	    });
 	 }
 	
 	app.controller('MarketCtrl', MarketCtrl);
@@ -1227,23 +1231,31 @@
 	        vm.urls = [
 	            {
 	                title: 'Home',
-	                url: 'home',
+	                state: 'home',
 	                icon: 'home'
 	            },
 	            {
 	                title: 'Cards',
-	                url: 'cards',
+	                state: 'cards',
 	                icon: 'apps'
 	            },
 	            {
 	                title: 'Market',
-	                url: 'market',
+	                state: 'market',
 	                icon: 'shopping_basket'
 	            },
 	            {
 	                title: 'user',
-	                url: 'user',
+	                state: 'user',
 	                icon: 'account_box'
+	            },
+	        ];
+	        
+	        vm.tools = [
+	            {
+	                title: 'Edit Cards',
+	                state: 'manage-cards',
+	                icon: 'edit'
 	            },
 	        ];
 	        
@@ -1270,7 +1282,7 @@
 /* 23 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\n    <div class=\"md-toolbar-tools\">\n        <div class=\"md-primary\"><h2>User {{app.user.full_name}}</h2></div>\n    </div>\n    <md-tabs md-stretch-tabs md-selected=\"tabs.selectedIndex\">\n        <md-tab ng-repeat=\"url in tabs.urls\" \n            ui-sref=\"app.{{url.url}}\" md-active=\"tabs.stateName == url.url\">\n            <md-icon \n                aria-label=\"{{ url.name }}\"\n                class=\"material-icons step\"\n                ng-class=\"it.size\">\n                {{url.icon}}\n            </md-icon>\n        </md-tab>\n    </md-tabs>\n</md-toolbar>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\n    <div class=\"md-toolbar-tools\">\n        <div class=\"md-primary\">\n            <h2>User {{app.user.full_name}}</h2>\n        </div>\n        <span flex></span>\n        <md-menu md-position-mode=\"target-right target\">\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\n            </md-button>\n            <md-menu-content width=\"4\">\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\n                        {{tool.title}}\n                    </md-button>\n                </md-menu-item>\n            </md-menu-content>\n        </md-menu>\n    </div>\n    <md-tabs md-stretch-tabs md-selected=\"tabs.selectedIndex\">\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\n                {{url.icon}}\n            </md-icon>\n        </md-tab>\n    </md-tabs>\n</md-toolbar>\n"
 
 /***/ },
 /* 24 */
@@ -1437,7 +1449,7 @@
 /* 35 */
 /***/ function(module, exports) {
 
-	module.exports = "MARKET"
+	module.exports = "<card ng-repeat=\"card in market.cards\" data=\"card\"></card>"
 
 /***/ },
 /* 36 */

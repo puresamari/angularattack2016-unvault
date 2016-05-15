@@ -105,13 +105,13 @@ class UsersController extends AppController
     {
 		$id = 1;
         $user = $this->Users->get($id, [
-            'contain' => []
+            'contain' => [
+				'Cards'
+			]
         ]);
-		
-		$cards = $this->Users->Cards->find('all',['limit' => 200]);
 
-        $this->set(compact('user', 'cards'));
-        $this->set('_serialize', ['user', 'cards']);
+		$this->set(compact('user'));
+		$this->set('_serialize', ['user']);
     }
 
     /**
@@ -146,8 +146,11 @@ class UsersController extends AppController
     public function edit($id = null)
     {
         $user = $this->Users->get($id, [
-            'contain' => []
+            'contain' => [
+				'Cards'
+			]
         ]);
+		
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->data);
             if ($this->Users->save($user)) {
@@ -179,4 +182,5 @@ class UsersController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+	
 }
