@@ -1621,7 +1621,7 @@
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n\t\tUnvault is here to open. Your e-learning app\r\n    </p>\r\n\t<p flex layout=\"row\">\r\n\t\tCreate learning cards with specific tags, add thoes cards to your feed and start learning new things.\r\n\t</p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\r\n    </div>\r\n</md-content>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n\t\tUnvault is here to open. Your e-learning app\r\n    </p>\r\n\t<p flex layout=\"row\">\r\n\t\tCreate learning cards with specific tags, add thoes cards to your feed and start learning new things.\r\n\t</p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\">go to app</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"manage-cards\">Edit Cards</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\">Register</md-button>\r\n    </div>\r\n</md-content>"
 
 /***/ },
 /* 32 */
@@ -1651,13 +1651,13 @@
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in home.data.user.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n<md-subheader class=\"md-primary\">Have a look at: </md-subheader>\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>"
+	module.exports = "<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in home.data.user.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\"layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete md-auto-select=\"true\" flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, card.tags)\"></card>\r\n</div>"
+	module.exports = "<div layout=\"column\" layout-wrap md-whiteframe=\"4\" layout-margin>\r\n    <label layout=\"column\" flex=\"20\">Find</label>\r\n    <md-autocomplete flex=\"80\" layout=\"column\" md-auto-select=\"true\" md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, card.tags)\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */
