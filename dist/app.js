@@ -44,25 +44,27 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// angular dependencies
+	//stye
 	
 	__webpack_require__(1);
-	__webpack_require__(2);
-	__webpack_require__(3);
-	__webpack_require__(4);
-	__webpack_require__(5);
 	
+	// angular dependencies
+	
+	__webpack_require__(5);
 	__webpack_require__(6);
+	__webpack_require__(7);
+	__webpack_require__(8);
+	__webpack_require__(9);
+	
 	__webpack_require__(10);
+	__webpack_require__(12);
 	
 	window.app = angular.module('unvault', ['ui.router', 'ngMaterial', 'ngAnimate']);
 	
-	__webpack_require__(12);
+	__webpack_require__(14);
 	
 	// controller 
 	
-	__webpack_require__(13);
-	__webpack_require__(14);
 	__webpack_require__(15);
 	__webpack_require__(16);
 	__webpack_require__(17);
@@ -70,19 +72,369 @@
 	__webpack_require__(19);
 	__webpack_require__(20);
 	__webpack_require__(21);
+	__webpack_require__(22);
+	__webpack_require__(23);
 	
 	// directives
 	
-	__webpack_require__(22);
 	__webpack_require__(24);
 	__webpack_require__(26);
+	__webpack_require__(28);
 	
 	// general
 	
-	__webpack_require__(28);
+	__webpack_require__(30);
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(2);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./main.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./main.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#logo {\n  max-width: 100%;\n  height: 100%; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 5 */
 /***/ function(module, exports) {
 
 	/*
@@ -402,7 +754,7 @@
 
 
 /***/ },
-/* 2 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
@@ -415,7 +767,7 @@
 	J.$inject=["$state"],K.$inject=["$state"],b.module("ui.router.state").filter("isState",J).filter("includedByState",K)}(window,window.angular);
 
 /***/ },
-/* 3 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/*
@@ -477,7 +829,7 @@
 
 
 /***/ },
-/* 4 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/*
@@ -497,7 +849,7 @@
 
 
 /***/ },
-/* 5 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/*!
@@ -517,16 +869,16 @@
 	}()}(window,window.angular),window.ngMaterial={version:{full:"1.0.8"}};
 
 /***/ },
-/* 6 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(7);
+	var content = __webpack_require__(11);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(9)(content, {});
+	var update = __webpack_require__(4)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -543,10 +895,10 @@
 	}
 
 /***/ },
-/* 7 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(8)();
+	exports = module.exports = __webpack_require__(3)();
 	// imports
 	
 	
@@ -557,324 +909,16 @@
 
 
 /***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(11);
+	var content = __webpack_require__(13);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(9)(content, {});
+	var update = __webpack_require__(4)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -891,10 +935,10 @@
 	}
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(8)();
+	exports = module.exports = __webpack_require__(3)();
 	// imports
 	
 	
@@ -905,7 +949,7 @@
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports) {
 
 	app.config(function($mdThemingProvider) { 
@@ -944,7 +988,7 @@
 	//                'Authorization': localStorage.token
 	            }
 	        };
-	        console.log('requesting', req)
+	        console.log('getting', req)
 	        return $http(req).then( _promise );
 	    };
 	    
@@ -952,7 +996,7 @@
 	        var url = '';
 	        switch (e) {
 	            case 'card':
-	                url = data.selectedCard + 'delete-card.json';
+	                url = data.selectedCard + '/delete-card.json';
 	                break;
 	        }
 	        var req = {
@@ -962,7 +1006,7 @@
 	                'accept': 'application/json'
 	            }
 	        };
-	        console.log('sending', req);
+	        console.log('deleting', req);
 	        return $http(req).then( _promise );
 	    };
 	    
@@ -1010,7 +1054,7 @@
 	                'accept': 'application/json'
 	            }
 	        };
-	        console.log('sending', req);
+	        console.log('putting', req);
 	        return $http(req).then( _promise );
 	    };
 	    
@@ -1023,7 +1067,7 @@
 	});
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports) {
 
 	function LandingCtrl($scope) {
@@ -1033,7 +1077,7 @@
 	app.controller('LandingCtrl', LandingCtrl);
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	function LoginCtrl($scope, $rootScope, Data) {
@@ -1054,7 +1098,7 @@
 	app.controller('LoginCtrl', LoginCtrl);
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports) {
 
 	function RegisterCtrl($scope, Data) {
@@ -1075,7 +1119,7 @@
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports) {
 
 	function AppCtrl($scope, $rootScope, $location, $state, Data) {
@@ -1109,7 +1153,7 @@
 	app.controller('AppCtrl', AppCtrl);
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
 
 	function HomeCtrl($scope, Data) {
@@ -1124,7 +1168,7 @@
 	app.controller('HomeCtrl', HomeCtrl);
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	function UserCtrl($scope) {
@@ -1135,7 +1179,7 @@
 	app.controller('UserCtrl', UserCtrl);
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports) {
 
 	function CardsCtrl($scope) {
@@ -1146,7 +1190,7 @@
 	app.controller('CardsCtrl', CardsCtrl);
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	function MarketCtrl($scope, Data) {
@@ -1155,39 +1199,40 @@
 	    
 	    Data.get('cards', function(response){
 	        vm.cards = response.data.cards;
+	        console.log('cards', vm.cards);
 	    });
 	 }
 	
 	app.controller('MarketCtrl', MarketCtrl);
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
-	function ManageCardsCtrl($scope, Data) {
+	function ManageCardsCtrl($scope, $rootScope, Data) {
 	    var vm = this;
 	    
-	    vm.edit_enabled = true;
+	    vm.edit_enabled = false;
 	    
 	    vm.data = {
 	        'selectedCard': 0,
-	        'model': {
-	            "name": "test",
-	            "question": "Is testing good?",
-	            "answer": "TDD is the best"
-	        },
 	    }
 	    
-	    vm.cards = [
-	        {
-	            "id": 0,
-	            "name": "test",
-	        },
-	        {
-	            "id": 2,
-	            "name": "test2",
-	        },
-	    ];
+	    vm.updateModel = function(){
+	        if(vm.edit_enabled) {
+	            Data.get('card', function(response){
+	                vm.data.model = response.data.card;
+	            }, vm.data.selectedCard);
+	        } else {
+	            vm.data.model = {
+	                "name": "",
+	                "question": "",
+	                "answer": ""
+	            };
+	        }
+	    };
+	    
+	    vm.cards = [];
 	    
 	    vm.loadCards = function(){
 	        Data.get('cards', function(response){
@@ -1217,7 +1262,7 @@
 	app.controller('ManageCardsCtrl', ManageCardsCtrl);
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function getNameFromState(statename){
@@ -1272,50 +1317,56 @@
 	        replace: true,
 	        controller: TabsCtrl,
 	        controllerAs: 'tabs',
-	        template: __webpack_require__(23),
+	        template: __webpack_require__(25),
 	    }
 	}
 	
 	app.directive('headerTabs', TabsDirective);
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\n    <div class=\"md-toolbar-tools\">\n        <div class=\"md-primary\">\n            <h2>User {{app.user.full_name}}</h2>\n        </div>\n        <span flex></span>\n        <md-menu md-position-mode=\"target-right target\">\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\n            </md-button>\n            <md-menu-content width=\"4\">\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\n                        {{tool.title}}\n                    </md-button>\n                </md-menu-item>\n            </md-menu-content>\n        </md-menu>\n    </div>\n    <md-tabs md-stretch-tabs md-selected=\"tabs.selectedIndex\">\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\n                {{url.icon}}\n            </md-icon>\n        </md-tab>\n    </md-tabs>\n</md-toolbar>\n"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <div flex=\"10\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </div>\r\n        <div class=\"md-primary\">\r\n            <h2>User {{app.user.full_name}}</h2>\r\n        </div>\r\n        <span flex></span>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>\r\n"
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	function CardDirective(){
+	function CardDirective(Data){
 	    function CardCtrl($scope) {
 	        var vm = this;
-	        vm.data = $scope.data;
 	        vm.state = 0;
+	        
+	        vm.data = null;
+	        
+	        Data.get('card', function(result){
+	            vm.data = result.data.card;
+	        }, $scope.id)
 	    }
 	    
 	    return {
 	        restrict: 'E',
 	        scope: {
-	            data: '=data'
+	            id: '=id'
 	        },
+	        replace: true,
 	        controller: CardCtrl,
 	        controllerAs: 'card',
-	        template: __webpack_require__(25),
+	        template: __webpack_require__(27),
 	    }
 	}
 	
 	app.directive('card', CardDirective);
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\n    <md-card-header>\n        <h3>{{card.data.name}}</h3>\n    </md-card-header>\n    <md-card-content>\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\n    </md-card-content>\n    <md-card-actions layout=\"row\" ng-show=\"card.state == 0\" layout-align=\"center center\">\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\n    </md-card-actions>\n    <md-card-actions layout=\"row\" ng-show=\"card.state == 1\" layout-align=\"center center\">\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\n    </md-card-actions>\n</md-card>\n"
+	module.exports = "<div flex-gt-sm=\"33\" flex-gt-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-margin=\"4\">\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button flex class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button flex=\"50\" class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button flex=\"50\" class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function GravatarDirective(){
@@ -1337,68 +1388,68 @@
 	        },
 	        controller: GravatarCtrl,
 	        controllerAs: 'gravatar',
-	        template: __webpack_require__(27),
+	        template: __webpack_require__(29),
 	    }
 	}
 	
 	app.directive('gravatar', GravatarDirective);
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = "<img src=\"{{gravatar.src}}\">"
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	    $stateProvider
 	        .state('landing', {
 	            url: '/',
-	            template: __webpack_require__(29),
+	            template: __webpack_require__(31),
 	            controller: 'LandingCtrl as landing'
 	        })
 	        .state('login', {
 	            url: '/login',
-	            template: __webpack_require__(30),
+	            template: __webpack_require__(32),
 	            controller: 'LoginCtrl as login'
 	        })
 	        .state('register', {
 	            url: '/register',
-	            template: __webpack_require__(31),
+	            template: __webpack_require__(33),
 	            controller: 'RegisterCtrl as register'
 	        })
 	        .state('manage-cards', {
 	            url: '/manage-cards',
-	            template: __webpack_require__(32),
+	            template: __webpack_require__(34),
 	            controller: 'ManageCardsCtrl as manageCards'
 	        })
 	        .state('app', {
 	            abstract: true,
 	            url: '/app',
-	            template: __webpack_require__(33),
+	            template: __webpack_require__(35),
 	            controller: 'AppCtrl as app'
 	        })
 	        .state('app.home', {
 	            url: '',
-	            template: __webpack_require__(34),
+	            template: __webpack_require__(36),
 	            controller: 'HomeCtrl as home'
 	        })
 	        .state('app.market', {
 	            url: '/market',
-	            template: __webpack_require__(35),
+	            template: __webpack_require__(37),
 	            controller: 'MarketCtrl as market'
 	        })
 	        .state('app.cards', {
 	            url: '/cards',
-	            template: __webpack_require__(36),
+	            template: __webpack_require__(38),
 	            controller: 'CardsCtrl as cards'
 	        })
 	        .state('app.user', {
 	            url: '/user',
-	            template: __webpack_require__(37),
+	            template: __webpack_require__(39),
 	            controller: 'UserCtrl as user'
 	        });
 	    $urlRouterProvider.otherwise('/app');
@@ -1410,58 +1461,58 @@
 	});
 
 /***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <img src=\"../assets/img/logo.png\" flex=\"10\">\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\n    <p flex layout=\"row\">\n        Unvault is here to open / unleash your mind and learn new stuff\n    </p>\n    <div layout=\"row\">\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\n    </div>\n    <div layout=\"row\">\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\n    </div>\n</md-content>"
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>Login</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <md-input-container>\n        <label>Email</label>\n        <input ng-model=\"login.model.email\" type=\"email\">\n    </md-input-container>\n    <md-input-container>\n        <label>Password</label>\n        <input ng-model=\"login.model.password\" type=\"password\">\n    </md-input-container>\n    <md-button class=\"md-raised md-primary\" ng-click=\"login.send()\">Login</md-button>\n<!--    <md-button class=\"md-raised md-primary\" ui-sref=\"app\">Login</md-button>-->\n</md-content>"
-
-/***/ },
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>Login</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <md-input-container>\n        <label>Email</label>\n        <input ng-model=\"register.model.email\" type=\"email\">\n    </md-input-container>\n    <md-input-container>\n        <label>Password</label>\n        <input ng-model=\"register.model.password\" type=\"password\">\n    </md-input-container>\n    <md-input-container>\n        <label>Full Name</label>\n        <input ng-model=\"register.model.full_name\">\n    </md-input-container>\n    <md-button ng-click=\"register.send()\">Submit</md-button>\n</md-content>\n"
+	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <div flex=\"10\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </div>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n        Unvault is here to open / unleash your mind and learn new stuff\r\n    </p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\r\n    </div>\r\n</md-content>"
 
 /***/ },
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar>\n    <div class=\"md-toolbar-tools\">\n        <h1>manage Cards</h1>\n    </div>\n</md-toolbar>\n<md-content layout=\"column\" flex layout-padding>\n    <div layout=\"row\">\n        <md-input-container flex=\"50\">\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.selectedCard\" md-on-open=\"loadUsers()\" ng-enabled=\"manageCards.edit\">\n                <md-option ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.name}}</md-option>\n            </md-select>\n        </md-input-container>\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\n            <span layout=\"column\">Add</span>\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit\" aria-label=\"edit/add\"></md-switch>\n            <span layout=\"column\">Edit</span>\n        </md-input-container>\n    </div>\n    <md-card>\n        <h1 layout=\"row\">Add card</h1>\n        <md-input-container layout=\"row\">\n            <label>Name</label>\n            <input ng-model=\"manageCards.data.model.name\">\n        </md-input-container>\n        <md-input-container layout=\"row\">\n            <label>Password</label>\n            <input ng-model=\"manageCards.data.model.question\">\n        </md-input-container>\n        <md-input-container layout=\"row\">\n            <label>Full Name</label>\n            <input ng-model=\"manageCards.data.model.answer\">\n        </md-input-container>\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit\">Update</md-button>\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit\">Add</md-button>\n    </md-card>\n    <md-card>\n        <h1 layout=\"row\">Delete card</h1>\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\n    </md-card>\n</md-content>"
+	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <h1>Login</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <md-input-container>\r\n        <label>Email</label>\r\n        <input ng-model=\"login.model.email\" type=\"email\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Password</label>\r\n        <input ng-model=\"login.model.password\" type=\"password\">\r\n    </md-input-container>\r\n    <md-button class=\"md-raised md-primary\" ng-click=\"login.send()\">Login</md-button>\r\n<!--    <md-button class=\"md-raised md-primary\" ui-sref=\"app\">Login</md-button>-->\r\n</md-content>"
 
 /***/ },
 /* 33 */
 /***/ function(module, exports) {
 
-	module.exports = "<header-tabs></header-tabs>\n<md-content ui-view layout=\"column\" flex layout-padding></md-content>"
+	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <h1>Login</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <md-input-container>\r\n        <label>Email</label>\r\n        <input ng-model=\"register.model.email\" type=\"email\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Password</label>\r\n        <input ng-model=\"register.model.password\" type=\"password\">\r\n    </md-input-container>\r\n    <md-input-container>\r\n        <label>Full Name</label>\r\n        <input ng-model=\"register.model.full_name\">\r\n    </md-input-container>\r\n    <md-button ng-click=\"register.send()\">Submit</md-button>\r\n</md-content>\r\n"
 
 /***/ },
 /* 34 */
 /***/ function(module, exports) {
 
-	module.exports = "<card ng-repeat=\"card in home.data.cards\" data=\"card\"></card>"
+	module.exports = "<md-toolbar>\r\n    <div class=\"md-toolbar-tools\">\r\n        <div flex=\"10\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\" style=\"float:left\">\r\n        </div>\r\n        <h1>manage Cards</h1>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>"
 
 /***/ },
 /* 35 */
 /***/ function(module, exports) {
 
-	module.exports = "<card ng-repeat=\"card in market.cards\" data=\"card\"></card>"
+	module.exports = "<header-tabs></header-tabs>\r\n<md-content ui-view layout=\"column\" flex layout-padding></md-content>"
 
 /***/ },
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<card></card>\n<card></card>\n<card></card>\n<card></card>\n<card></card>\n<card></card>"
+	module.exports = "<card ng-repeat=\"card in home.data.cards\" id=\"card.id\"></card>"
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\n    <gravatar email=\"app.user.email\" size=\"600\"></gravatar>\n    <md-card-content>\n        Full Name: {{app.user.full_name}}\n    </md-card-content>\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\n        <md-button>Save</md-button>\n    </md-card-actions>\n</md-card>\n"
+	module.exports = "<card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>"
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	module.exports = "here will be some card"
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = "<md-card>\r\n    <gravatar email=\"app.user.email\" size=\"600\"></gravatar>\r\n    <md-card-content>\r\n        Full Name: {{app.user.full_name}}\r\n    </md-card-content>\r\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\r\n        <md-button>Save</md-button>\r\n    </md-card-actions>\r\n</md-card>\r\n"
 
 /***/ }
 /******/ ]);
