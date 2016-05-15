@@ -120,7 +120,7 @@
 	
 	
 	// module
-	exports.push([module.id, "#logo {\n  max-width: 100%;\n  height: 100%; }\n", ""]);
+	exports.push([module.id, "#logo {\n  max-width: 100%;\n  height: 100%; }\n\nimg.gravatar {\n  max-width: 100%;\n  height: auto; }\n", ""]);
 	
 	// exports
 
@@ -1226,6 +1226,7 @@
 	    
 	    Data.get('home', null, function(response){
 	        vm.data = response.data;
+	        console.log('home', response.data)
 	    });
 	    
 	    Data.get('user-cards', null, function(response){
@@ -1241,7 +1242,6 @@
 
 	function UserCtrl($scope) {
 	    var vm = this;
-	    vm.test = 'test20';
 	 }
 	
 	app.controller('UserCtrl', UserCtrl);
@@ -1257,6 +1257,7 @@
 	    
 	    Data.get('user-cards', null, function(response){
 	        vm.cards = response.data;
+	        console.log(response);
 	    });
 	 }
 	
@@ -1315,18 +1316,24 @@
 	    vm.update = function(){
 	        Data.put('update-card', vm.data, function(response){
 	            console.log('sending card returned', response);
+	        }, function(result) {
+	            console.error('update error ', result);   
 	        });
 	    };
 	    
 	    vm.delete = function(){
 	        Data.delete('card', function(response){
 	            console.log('sending card returned', response);
-	        }, vm.data);
+	        }, vm.data, function(result) {
+	            console.error('delete error ', result);   
+	        });
 	    };
 	    
 	    vm.add = function(){
 	        Data.send('add-card', vm.data.model, function(response){
 	            console.log('sending card returned', response);
+	        }, function(result) {
+	            console.error('add error ', result);   
 	        });
 	    };
 	 }
@@ -1412,26 +1419,29 @@
 	        
 	        vm.data = null;
 	        
+	        vm.loading = true;
+	        
 	        vm.userAddCard = function() {
-	            console.log(vm.data)
 	            Data.send('user-add-card', {
 	                'user-id': localStorage.id,
 	                'card-id': vm.data.id,
-	            }, function(){
-	                
+	            }, function(result) {}, function(result) {
+	                console.error('userAddCard error ', result);   
 	            });
 	        };
 	        
 	        Data.get('card', $scope.id, function(result){
 	            vm.data = result.data.card;
+	            vm.loading = false;
 	        }, function(result){
-	            console.error('Error while requesting card :', result);
+	            console.error('Error while requesting card ', result);
+	            vm.loading = false;
 	            vm.data = {
 	                name: 'error',
 	                question: 'error',
 	                answer: 'CardDirective',
 	            };
-	        })
+	        });
 	    }
 	    
 	    return {
@@ -1452,7 +1462,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div flex-gt-sm=\"33\" flex-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
+	module.exports = "<div flex-gt-sm=\"33\" flex-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\" layout-sm=\"row\" layout-align=\"space-around\" ng-show=\"card.loading\">\r\n        <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r\n    </div>\r\n    <div layout=\"row\" ng-hide=\"card.loading\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-hide=\"card.loading\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0 && !card.loading\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1 && !card.loading\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-hide=\"card.loading\">\r\n        <md-chips>\r\n            <md-chip ng-repeat=\"tag in card.data.tags\">#{{tag.name}}</md-chip>\r\n        </md-chips>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
 /* 28 */
@@ -1487,7 +1497,7 @@
 /* 29 */
 /***/ function(module, exports) {
 
-	module.exports = "<img src=\"{{gravatar.src}}\">"
+	module.exports = "<img class=\"gravatar\" src=\"{{gravatar.src}}\">"
 
 /***/ },
 /* 30 */
@@ -1583,7 +1593,7 @@
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n{{home.data}}"
+	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.data.user.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n<md-subheader class=\"md-primary\">Have a look at: </md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 37 */
@@ -1601,7 +1611,7 @@
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\r\n    <gravatar email=\"app.user.email\" size=\"600\"></gravatar>\r\n    <md-card-content>\r\n        Full Name: {{app.user.full_name}}\r\n    </md-card-content>\r\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\r\n        <md-button>Save</md-button>\r\n    </md-card-actions>\r\n</md-card>\r\n"
+	module.exports = "<md-card>\r\n    <md-card-content layout=\"row\">\r\n        <gravatar layout-xs=\"row\" layout-gt-xs=\"column\" flex-gt-sm=\"20\" flex-gt-xs=\"40\" email=\"app.user.email\" size=\"600\"></gravatar>\r\n        <h2 layout-xs=\"row\" layout-gt-xs=\"column\" flex-gt-sm=\"80\" flex-gt-xs=\"60\">Full Name: {{app.user.full_name}}</h2>\r\n    </md-card-content>\r\n    <md-card-content>\r\n        Full Name: {{app.user.full_name}}\r\n    </md-card-content>\r\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\r\n        <md-button>Save</md-button>\r\n    </md-card-actions>\r\n</md-card>\r\n"
 
 /***/ }
 /******/ ]);
