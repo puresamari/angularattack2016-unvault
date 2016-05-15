@@ -10,6 +10,7 @@ function CardDirective(){
         scope: {
             data: '=data'
         },
+        replace: true,
         controller: CardCtrl,
         controllerAs: 'card',
         template: require('./card.component.html'),

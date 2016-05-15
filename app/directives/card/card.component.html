@@ -1,16 +1,16 @@
-<md-card>
-    <md-card-header>
+<div flex-gt-sm="33" flex-gt-xs="100" flex-sm="50" md-whiteframe="4" layout-margin="4">
+    <div layout="row">
         <h3>{{card.data.name}}</h3>
-    </md-card-header>
-    <md-card-content>
+    </div>
+    <div layout="row">
         <p ng-show="card.state == 0">{{card.data.question}}</p>
         <p ng-show="card.state == 1">{{card.data.answer}}</p>
-    </md-card-content>
-    <md-card-actions layout="row" ng-show="card.state == 0" layout-align="center center">
-        <md-button class="md-accent md-raised md-hue-3" ng-click="card.state = 1">Answer</md-button>
-    </md-card-actions>
-    <md-card-actions layout="row" ng-show="card.state == 1" layout-align="center center">
-        <md-button class="md-warn"><md-icon>cancel</md-icon></md-button>
-        <md-button class="md-primary"><md-icon>check</md-icon></md-button>
-    </md-card-actions>
-</md-card>
+    </div>
+    <div layout="row" ng-show="card.state == 0">
+        <md-button flex class="md-accent md-raised md-hue-3" ng-click="card.state = 1">Answer</md-button>
+    </div>
+    <div layout="row" ng-show="card.state == 1">
+        <md-button flex="50" class="md-warn"><md-icon>cancel</md-icon></md-button>
+        <md-button flex="50" class="md-primary"><md-icon>check</md-icon></md-button>
+    </div>
+</div>
