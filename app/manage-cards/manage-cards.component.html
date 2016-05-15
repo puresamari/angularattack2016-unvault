@@ -34,6 +34,14 @@
             <label>Full Name</label>
             <input ng-model="manageCards.data.model.answer">
         </md-input-container>
+        <md-input-container ng-show="manageCards.edit_enabled">
+            <label>Tags</label>
+            <md-select ng-model="manageCards.selectedTags" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader" multiple>
+                <md-optgroup label="Tags">
+                    <md-option ng-value="tag" ng-repeat="tag in manageCards.availTags">{{tag.name}}</md-option>
+                </md-optgroup>
+            </md-select>
+        </md-input-container>
         <md-button ng-click="manageCards.update()" ng-show="manageCards.edit_enabled">Update</md-button>
         <md-button ng-click="manageCards.add()" ng-show="!manageCards.edit_enabled">Add</md-button>
     </md-card>
@@ -42,3 +50,5 @@
         <md-button ng-click="manageCards.delete()">Delete</md-button>
     </md-card>
 </md-content>
+
+ {{manageCards.selectedTags}}

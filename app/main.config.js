@@ -74,8 +74,7 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
             method: 'GET',
             url: 'http://52.39.11.99/' + url,
             headers: {
-                'accept': 'application/json',
-                'Authorization': localStorage.token
+                'accept': 'application/json'
             }
         };
         console.log('getting', req);
@@ -96,7 +95,7 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
                 break;
         }
         var req = {
-            method: 'GET',
+            method: 'POST',
 //            method: 'DELETE',
             url: 'http://52.39.11.99/' + url,
             headers: {
