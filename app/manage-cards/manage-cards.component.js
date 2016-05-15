@@ -38,9 +38,9 @@ function ManageCardsCtrl($scope, $rootScope, Data, Error) {
     
     vm.update = function(){
         var sendData = vm.data;
-        sendData.model.tags = {ids: {}};
+        sendData.model.tags = {_ids: {}};
         angular.forEach(vm.selectedTags, function(value, key) {
-            sendData.model.tags.ids[key] = value.id;
+            sendData.model.tags._ids[key] = value.id;
         });
         console.log(sendData, 'asdf');
         Data.put('update-card', sendData, function(response){

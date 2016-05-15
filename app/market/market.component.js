@@ -6,8 +6,10 @@ function MarketCtrl($scope, Data) {
         var retval = false;
         if(tag == undefined) return true;
         angular.forEach(card, function(value, key) {
-            console.log(value.id, tag.id)
-            if(value.id == tag.id) retval = true; 
+            if(value.id == tag.id) {
+                retval = true;
+            };
+            console.log(value.id);
         });
         return retval;
     };
