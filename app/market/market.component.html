@@ -1,3 +1,11 @@
+<md-subheader class="md-primary">Find</md-subheader>
+<div layout="row" layout-xs="column" layout-wrap>
+    <h2 flex="20">Find</h2>
+    <md-autocomplete flex=80 md-selected-item="market.tagFilter" md-items="item in market.tags" md-item-text="item.name">
+        <span md-highlight-text="searchText">{{item.name}}</span>
+    </md-autocomplete>
+</div>
+
 <div layout="row" layout-wrap>
-    <card ng-repeat="card in market.cards" id="card.id"></card>
+    <card ng-repeat="card in market.cards" id="card.id" ng-show="market.checkCardTags(market.tagFilter, market.tags)"></card>
 </div>

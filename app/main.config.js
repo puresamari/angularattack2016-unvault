@@ -53,6 +53,9 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
             case 'user-cards':
                 url = localStorage.id + '/card'
                 break;
+            case 'tags':
+                url = 'tags'
+                break;
         }
         var req = {
 //            method: 'POST',
