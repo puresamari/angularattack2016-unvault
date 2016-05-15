@@ -11,7 +11,7 @@
     <div layout="row">
         <md-input-container flex="50">
             <md-select placeholder="Select a card" ng-model="manageCards.data.selectedCard" md-on-open="manageCards.loadCards()" ng-change="manageCards.updateModel()" ng-enabled="manageCards.edit">
-                <md-option ng-click="manageCards.updateModel()" ng-repeat="card in manageCards.cards" ng-value="card.id">{{card.id}} | {{card.name}}</md-option>
+                <md-option md-model="" ng-click="manageCards.updateModel()" ng-repeat="card in manageCards.cards" ng-value="card.id">{{card.id}} | {{card.name}}</md-option>
             </md-select>
         </md-input-container>
         <md-input-container flex="50" layout="row" layout-align="center center">
@@ -36,10 +36,8 @@
         </md-input-container>
         <md-input-container ng-show="manageCards.edit_enabled">
             <label>Tags</label>
-            <md-select ng-model="manageCards.selectedTags" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader" multiple>
-                <md-optgroup label="Tags">
-                    <md-option ng-value="tag" ng-repeat="tag in manageCards.availTags">{{tag.name}}</md-option>
-                </md-optgroup>
+            <md-select ng-model="manageCards.selectedTags" multiple>
+                <md-option ng-value="tag" ng-repeat="tag in manageCards.availTags">{{tag.name}}</md-option>
             </md-select>
         </md-input-container>
         <md-button ng-click="manageCards.update()" ng-show="manageCards.edit_enabled">Update</md-button>

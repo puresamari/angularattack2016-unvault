@@ -11,7 +11,12 @@ function ManageCardsCtrl($scope, $rootScope, Data, Error) {
         if(vm.edit_enabled && vm.data.selectedCard != 0) {
             Data.get('card', vm.data.selectedCard, function(response){
                 vm.data.model = response.data.card;
-                vm.selectedTags = response.data.card.tags;
+                vm.selectedTags = [];
+                console.log(response.data.card.tags);
+                angular.forEach(response.data.card.tags, function(value, key) {
+                    vm.selectedTags.push(vm.availTags[value.id]);
+                    console.log(value.id, vm.availTags)
+                });
             });
         } else {
             vm.data.model = {
@@ -19,13 +24,12 @@ function ManageCardsCtrl($scope, $rootScope, Data, Error) {
                 "question": "",
                 "answer": ""
             };
-                vm.selectedTags = [];
+            vm.selectedTags = [];
         }
     };
     vm.availTags = [];
     Data.get('tags', null, function(response){
         vm.availTags = response.data.tags;
-        console.log(response);
     });
     
     vm.cards = [];
