@@ -23,6 +23,7 @@ require('./home/home.component.js');
 require('./user/user.component.js');
 require('./cards/cards.component.js');
 require('./market/market.component.js');
+require('./manage-cards/manage-cards.component.js');
 
 // directives
 

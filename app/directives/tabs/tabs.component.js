@@ -9,23 +9,31 @@ function TabsDirective($location, $window){
         vm.urls = [
             {
                 title: 'Home',
-                url: 'home',
+                state: 'home',
                 icon: 'home'
             },
             {
                 title: 'Cards',
-                url: 'cards',
+                state: 'cards',
                 icon: 'apps'
             },
             {
                 title: 'Market',
-                url: 'market',
+                state: 'market',
                 icon: 'shopping_basket'
             },
             {
                 title: 'user',
-                url: 'user',
+                state: 'user',
                 icon: 'account_box'
+            },
+        ];
+        
+        vm.tools = [
+            {
+                title: 'Edit Cards',
+                state: 'manage-cards',
+                icon: 'edit'
             },
         ];
         

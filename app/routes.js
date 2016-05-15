@@ -15,6 +15,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             template: require('./register/register.component.html'),
             controller: 'RegisterCtrl as register'
         })
+        .state('manage-cards', {
+            url: '/manage-cards',
+            template: require('./manage-cards/manage-cards.component.html'),
+            controller: 'ManageCardsCtrl as manageCards'
+        })
         .state('app', {
             abstract: true,
             url: '/app',
@@ -22,7 +27,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'AppCtrl as app'
         })
         .state('app.home', {
-            url: '/home',
+            url: '',
             template: require('./home/home.component.html'),
             controller: 'HomeCtrl as home'
         })

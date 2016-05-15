@@ -13,9 +13,10 @@ function AppCtrl($scope, $rootScope, $location, $state, Data) {
     };
     
     function checkUser() {
-        Data.get('general', function(response){
-            console.log('checker got ', response);
-            if(false) {
+        Data.get('user', function(response){
+            console.log('app user check: ', response);
+            var logout = response.data.user == null;
+            if(logout) {
                 vm.logout();
             }
             vm.user = response.data.user;

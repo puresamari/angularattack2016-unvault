@@ -7,7 +7,7 @@ app.config(function($mdThemingProvider) {
 app.factory('Data', function($http, $rootScope) {
     var service = {};
     
-    service.get = function(e, _promise) {
+    service.get = function(e, _promise, data) {
         var url = 'home.json';
         switch (e) {
             case 'general':
@@ -15,6 +15,15 @@ app.factory('Data', function($http, $rootScope) {
                 break;
             case 'logout':
                 url = 'users/logout';
+                break;
+            case 'user':
+                url = 'users.json';
+                break;
+            case 'card':
+                url = data + '/card.json';
+                break;
+            case 'cards':
+                url = '/cards.json';
                 break;
         }
         var req = {
@@ -29,8 +38,27 @@ app.factory('Data', function($http, $rootScope) {
         return $http(req).then( _promise );
     };
     
-    service.send = function(e, data, _promise) {
+    service.delete = function(e, _promise, data) {
         var url = '';
+        switch (e) {
+            case 'card':
+                url = data.selectedCard + 'delete-card.json';
+                break;
+        }
+        var req = {
+            method: 'DELETE',
+            url: 'http://52.39.11.99/' + url,
+            headers: {
+                'accept': 'application/json'
+            }
+        };
+        console.log('sending', req);
+        return $http(req).then( _promise );
+    };
+    
+    service.send = function(e, data, _promise) {
+        var url = '',
+            senddata = data;
         switch (e) {
             case 'register':
                 url = 'users/add';
@@ -38,9 +66,34 @@ app.factory('Data', function($http, $rootScope) {
             case 'login':
                 url = 'users/login';
                 break;
+            case 'add-card':
+                url = 'add-card.json';
+                senddata = data;
+                break;
         }
         var req = {
             method: 'POST',
+            url: 'http://52.39.11.99/' + url,
+            data: data,
+            headers: {
+                'accept': 'application/json'
+            }
+        };
+        console.log('sending', req);
+        return $http(req).then( _promise );
+    };
+    
+    service.put = function(e, data, _promise) {
+        var url = '',
+            data = data;
+        switch (e) {
+            case 'update-card':
+                url = data.selectedCard + '/update-card.json';
+                data = data.model;
+                break;
+        }
+        var req = {
+            method: 'PUT',
             url: 'http://52.39.11.99/' + url,
             data: data,
             headers: {

@@ -1,0 +1,40 @@
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <h1>manage Cards</h1>
+    </div>
+</md-toolbar>
+<md-content layout="column" flex layout-padding>
+    <div layout="row">
+        <md-input-container flex="50">
+            <md-select placeholder="Select a card" ng-model="manageCards.selectedCard" md-on-open="loadUsers()" ng-enabled="manageCards.edit">
+                <md-option ng-repeat="card in manageCards.cards" ng-value="card.id">{{card.name}}</md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex="50" layout="row" layout-align="center center">
+            <span layout="column">Add</span>
+            <md-switch layout="column" flex ng-model="manageCards.edit" aria-label="edit/add"></md-switch>
+            <span layout="column">Edit</span>
+        </md-input-container>
+    </div>
+    <md-card>
+        <h1 layout="row">Add card</h1>
+        <md-input-container layout="row">
+            <label>Name</label>
+            <input ng-model="manageCards.data.model.name">
+        </md-input-container>
+        <md-input-container layout="row">
+            <label>Password</label>
+            <input ng-model="manageCards.data.model.question">
+        </md-input-container>
+        <md-input-container layout="row">
+            <label>Full Name</label>
+            <input ng-model="manageCards.data.model.answer">
+        </md-input-container>
+        <md-button ng-click="manageCards.update()" ng-show="manageCards.edit">Update</md-button>
+        <md-button ng-click="manageCards.add()" ng-show="!manageCards.edit">Add</md-button>
+    </md-card>
+    <md-card>
+        <h1 layout="row">Delete card</h1>
+        <md-button ng-click="manageCards.delete()">Delete</md-button>
+    </md-card>
+</md-content>

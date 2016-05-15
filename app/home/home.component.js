@@ -1,6 +1,10 @@
-function HomeCtrl($scope) {
+function HomeCtrl($scope, Data) {
     var vm = this;
-    vm.test = 'test20';
+    vm.data = null;
+    
+    Data.get('home', function(response){
+        vm.data = response.data;
+    });
  }
 
 app.controller('HomeCtrl', HomeCtrl);
