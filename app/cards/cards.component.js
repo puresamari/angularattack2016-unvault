@@ -1,6 +1,11 @@
-function CardsCtrl($scope) {
+function CardsCtrl($scope, Data) {
     var vm = this;
-    vm.test = 'test20';
+    
+    vm.cards = {};
+    
+    Data.get('user-cards', null, function(response){
+        vm.cards = response.data;
+    });
  }
 
 app.controller('CardsCtrl', CardsCtrl);
