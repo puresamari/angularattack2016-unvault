@@ -1,4 +1,4 @@
-function CardDirective(Data){
+function CardDirective(Data, Error){
     function CardCtrl($scope) {
         var vm = this;
         vm.state = 0;
@@ -9,9 +9,12 @@ function CardDirective(Data){
         
         vm.userAddCard = function() {
             Data.send('user-add-card', {
-                'user-id': localStorage.id,
+                'user-id': parseInt(localStorage.id),
                 'card-id': vm.data.id,
-            }, function(result) {}, function(result) {
+            }, function(result) {
+                console.log(result);
+                Error.info('Card', 'Card ')
+            }, function(result) {
                 console.error('userAddCard error ', result);   
             });
         };

@@ -38,14 +38,13 @@ function ManageCardsCtrl($scope, $rootScope, Data, Error) {
     
     vm.update = function(){
         var sendData = vm.data;
-        vm.data.model.tags = [];
+        sendData.model.tags = {ids: {}};
         angular.forEach(vm.selectedTags, function(value, key) {
-            vm.data.model.tags.push({
-                'tag_id' : value.id,
-                'card_id' : vm.data.selectedCard,
-            });
+            sendData.model.tags.ids[key] = value.id;
         });
+        console.log(sendData, 'asdf');
         Data.put('update-card', sendData, function(response){
+            console.log(response);
             Error.info('Added', 'Card "' + response.data.card.name + '" has been updated');
         }, function(result) {
             console.error('update error ', result);   
@@ -63,11 +62,9 @@ function ManageCardsCtrl($scope, $rootScope, Data, Error) {
     
     vm.add = function(){
         var sendData = vm.data;
-        vm.data.model.tags = [];
-        angular.forEach(card, function(value, key) {
-            vm.data.model.tags.push({
-                'tag_id' : value.id
-            });
+        sendData.tags = {ids: {}};
+        angular.forEach(vm.selectedTags, function(value, key) {
+            sendData.tags.ids[key] = value.id;
         });
         Data.send('add-card', sendData, function(response){
             Error.info('Added', 'Card "' + response.data.name + '" has been added');

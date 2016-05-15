@@ -973,6 +973,18 @@
 	        );
 	    };
 	    
+	    serv.info = function (title, message) {
+	        $mdDialog.show(
+	            $mdDialog.alert({
+	                parent: angular.element(document.documentElement),
+	                title: title,
+	                textContent: message,
+	                ok: 'Ok',
+	                hasBackdrop: false,
+	                ariaLabel: title
+	            }));
+	    };
+	    
 	    return serv;
 	});
 	app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
@@ -1016,8 +1028,7 @@
 	            method: 'GET',
 	            url: 'http://52.39.11.99/' + url,
 	            headers: {
-	                'accept': 'application/json',
-	                'Authorization': localStorage.token
+	                'accept': 'application/json'
 	            }
 	        };
 	        console.log('getting', req);
@@ -1038,7 +1049,7 @@
 	                break;
 	        }
 	        var req = {
-	            method: 'GET',
+	            method: 'POST',
 	//            method: 'DELETE',
 	            url: 'http://52.39.11.99/' + url,
 	            headers: {
@@ -1299,7 +1310,7 @@
 /* 23 */
 /***/ function(module, exports) {
 
-	function ManageCardsCtrl($scope, $rootScope, Data) {
+	function ManageCardsCtrl($scope, $rootScope, Data, Error) {
 	    var vm = this;
 	    
 	    vm.edit_enabled = false;
@@ -1309,9 +1320,10 @@
 	    }
 	    
 	    vm.updateModel = function(){
-	        if(vm.edit_enabled) {
+	        if(vm.edit_enabled && vm.data.selectedCard != 0) {
 	            Data.get('card', vm.data.selectedCard, function(response){
 	                vm.data.model = response.data.card;
+	                vm.selectedTags = response.data.card.tags;
 	            });
 	        } else {
 	            vm.data.model = {
@@ -1319,8 +1331,14 @@
 	                "question": "",
 	                "answer": ""
 	            };
+	                vm.selectedTags = [];
 	        }
 	    };
+	    vm.availTags = [];
+	    Data.get('tags', null, function(response){
+	        vm.availTags = response.data.tags;
+	        console.log(response);
+	    });
 	    
 	    vm.cards = [];
 	    
@@ -1331,8 +1349,16 @@
 	    };
 	    
 	    vm.update = function(){
-	        Data.put('update-card', vm.data, function(response){
-	            console.log('sending card returned', response);
+	        var sendData = vm.data;
+	        vm.data.model.tags = [];
+	        angular.forEach(vm.selectedTags, function(value, key) {
+	            vm.data.model.tags.push({
+	                'tag_id' : value.id,
+	                'card_id' : vm.data.selectedCard,
+	            });
+	        });
+	        Data.put('update-card', sendData, function(response){
+	            Error.info('Added', 'Card "' + response.data.card.name + '" has been updated');
 	        }, function(result) {
 	            console.error('update error ', result);   
 	        });
@@ -1340,17 +1366,26 @@
 	    
 	    vm.delete = function(){
 	        Data.delete('card', function(response){
-	            console.log('sending card returned', response);
+	            Error.info('Deleted', 'Card has been deleted');
 	        }, vm.data, function(result) {
+	            Error.alert('Error', 'Card ' + response.data.name + ' has been added');
 	            console.error('delete error ', result);   
 	        });
 	    };
 	    
 	    vm.add = function(){
-	        Data.send('add-card', vm.data.model, function(response){
-	            console.log('sending card returned', response);
+	        var sendData = vm.data;
+	        vm.data.model.tags = [];
+	        angular.forEach(card, function(value, key) {
+	            vm.data.model.tags.push({
+	                'tag_id' : value.id
+	            });
+	        });
+	        Data.send('add-card', sendData, function(response){
+	            Error.info('Added', 'Card "' + response.data.name + '" has been added');
 	        }, function(result) {
-	            console.error('add error ', result);   
+	            Error.alert('Error', 'An error has accured while deleting a Card');
+	            console.error('add error ', result);
 	        });
 	    };
 	 }
@@ -1598,7 +1633,7 @@
 /* 34 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">manage Cards</h1>\r\n        <span flex></span>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">manage Cards</h1>\r\n        <span flex></span>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-input-container ng-show=\"manageCards.edit_enabled\">\r\n            <label>Tags</label>\r\n            <md-select ng-model=\"manageCards.selectedTags\" md-on-close=\"clearSearchTerm()\" data-md-container-class=\"selectdemoSelectHeader\" multiple>\r\n                <md-optgroup label=\"Tags\">\r\n                    <md-option ng-value=\"tag\" ng-repeat=\"tag in manageCards.availTags\">{{tag.name}}</md-option>\r\n                </md-optgroup>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>\r\n\r\n {{manageCards.selectedTags}}"
 
 /***/ },
 /* 35 */
