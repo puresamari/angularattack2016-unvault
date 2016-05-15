@@ -5,26 +5,29 @@ function CardDirective(Data){
         
         vm.data = null;
         
+        vm.loading = true;
+        
         vm.userAddCard = function() {
-            console.log(vm.data)
             Data.send('user-add-card', {
                 'user-id': localStorage.id,
                 'card-id': vm.data.id,
-            }, function(){
-                
+            }, function(result) {}, function(result) {
+                console.error('userAddCard error ', result);   
             });
         };
         
         Data.get('card', $scope.id, function(result){
             vm.data = result.data.card;
+            vm.loading = false;
         }, function(result){
-            console.error('Error while requesting card :', result);
+            console.error('Error while requesting card ', result);
+            vm.loading = false;
             vm.data = {
                 name: 'error',
                 question: 'error',
                 answer: 'CardDirective',
             };
-        })
+        });
     }
     
     return {

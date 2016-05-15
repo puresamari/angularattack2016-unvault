@@ -120,7 +120,7 @@
 	
 	
 	// module
-	exports.push([module.id, "#logo {\n  max-width: 100%;\n  height: 100%; }\n", ""]);
+	exports.push([module.id, "#logo {\n  max-width: 100%;\n  height: 100%; }\n\nimg.gravatar {\n  max-width: 100%;\n  height: auto; }\n", ""]);
 	
 	// exports
 
@@ -1007,6 +1007,9 @@
 	            case 'user-cards':
 	                url = localStorage.id + '/card'
 	                break;
+	            case 'tags':
+	                url = 'tags'
+	                break;
 	        }
 	        var req = {
 	//            method: 'POST',
@@ -1226,6 +1229,7 @@
 	    
 	    Data.get('home', null, function(response){
 	        vm.data = response.data;
+	        console.log('home', response.data)
 	    });
 	    
 	    Data.get('user-cards', null, function(response){
@@ -1241,7 +1245,6 @@
 
 	function UserCtrl($scope) {
 	    var vm = this;
-	    vm.test = 'test20';
 	 }
 	
 	app.controller('UserCtrl', UserCtrl);
@@ -1250,9 +1253,15 @@
 /* 21 */
 /***/ function(module, exports) {
 
-	function CardsCtrl($scope) {
+	function CardsCtrl($scope, Data) {
 	    var vm = this;
-	    vm.test = 'test20';
+	    
+	    vm.cards = {};
+	    
+	    Data.get('user-cards', null, function(response){
+	        vm.cards = response.data;
+	        console.log(response);
+	    });
 	 }
 	
 	app.controller('CardsCtrl', CardsCtrl);
@@ -1265,9 +1274,22 @@
 	    var vm = this;
 	    vm.cards = null;
 	    
+	    vm.checkCardTags = function(tag, card) {
+	        var retval = false;
+	        if(tag == undefined) return true;
+	        angular.forEach(card, function(value, key) {
+	            console.log(value.id, tag.id)
+	            if(value.id == tag.id) retval = true; 
+	        });
+	        return retval;
+	    };
+	    
 	    Data.get('cards', null, function(response){
 	        vm.cards = response.data.cards;
-	        console.log('cards', vm.cards);
+	    });
+	    
+	    Data.get('tags', null, function(response){
+	        vm.tags = response.data.tags;
 	    });
 	 }
 	
@@ -1311,18 +1333,24 @@
 	    vm.update = function(){
 	        Data.put('update-card', vm.data, function(response){
 	            console.log('sending card returned', response);
+	        }, function(result) {
+	            console.error('update error ', result);   
 	        });
 	    };
 	    
 	    vm.delete = function(){
 	        Data.delete('card', function(response){
 	            console.log('sending card returned', response);
-	        }, vm.data);
+	        }, vm.data, function(result) {
+	            console.error('delete error ', result);   
+	        });
 	    };
 	    
 	    vm.add = function(){
 	        Data.send('add-card', vm.data.model, function(response){
 	            console.log('sending card returned', response);
+	        }, function(result) {
+	            console.error('add error ', result);   
 	        });
 	    };
 	 }
@@ -1395,7 +1423,7 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">User {{main.user.full_name}}</h1>\r\n        <span flex></span>\r\n        <md-tabs class=\"md-primary\" show-gt-md flex-gt-md md-align-tabs=\"bottom\" md-selected=\"tabs.selectedIndex\">\r\n            <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n                {{url.title}}\r\n            </md-tab>\r\n        </md-tabs>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"main.logout()\">\r\n                        <md-icon class=\"material-icons\"> </md-icon>\r\n                        logut\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs hide-gt-md md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>\r\n"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex flex-gt-md=\"1\">User {{main.user.full_name}}</h1>\r\n        <span flex hide show-gt-md></span>\r\n        <md-tabs class=\"md-primary\" show-gt-md flex-gt-md md-align-tabs=\"bottom\" md-selected=\"tabs.selectedIndex\">\r\n            <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n                {{url.title}}\r\n            </md-tab>\r\n        </md-tabs>\r\n        <md-menu md-position-mode=\"target-right target\">\r\n            <md-button aria-label=\"Open demo menu\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r\n                <md-icon class=\"material-icons\"> more_vert </md-icon>\r\n            </md-button>\r\n            <md-menu-content width=\"4\">\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"ctrl.announceClick($index)\" ui-sref=\"{{tool.state}}\">\r\n                        <md-icon class=\"material-icons\"> {{tool.icon}} </md-icon>\r\n                        {{tool.title}}\r\n                    </md-button>\r\n                </md-menu-item>\r\n                <md-menu-item ng-repeat=\"tool in tabs.tools\">\r\n                    <md-button ng-click=\"main.logout()\">\r\n                        <md-icon class=\"material-icons\"> </md-icon>\r\n                        logut\r\n                    </md-button>\r\n                </md-menu-item>\r\n            </md-menu-content>\r\n        </md-menu>\r\n    </div>\r\n    <md-tabs hide-gt-md md-stretch-tabs md-selected=\"tabs.selectedIndex\">\r\n        <md-tab ng-repeat=\"url in tabs.urls\" ui-sref=\"app.{{url.state}}\" md-active=\"tabs.stateName == url.state\">\r\n            <md-icon aria-label=\"{{ url.name }}\" class=\"material-icons\">\r\n                {{url.icon}}\r\n            </md-icon>\r\n        </md-tab>\r\n    </md-tabs>\r\n</md-toolbar>"
 
 /***/ },
 /* 26 */
@@ -1408,26 +1436,29 @@
 	        
 	        vm.data = null;
 	        
+	        vm.loading = true;
+	        
 	        vm.userAddCard = function() {
-	            console.log(vm.data)
 	            Data.send('user-add-card', {
 	                'user-id': localStorage.id,
 	                'card-id': vm.data.id,
-	            }, function(){
-	                
+	            }, function(result) {}, function(result) {
+	                console.error('userAddCard error ', result);   
 	            });
 	        };
 	        
 	        Data.get('card', $scope.id, function(result){
 	            vm.data = result.data.card;
+	            vm.loading = false;
 	        }, function(result){
-	            console.error('Error while requesting card :', result);
+	            console.error('Error while requesting card ', result);
+	            vm.loading = false;
 	            vm.data = {
 	                name: 'error',
 	                question: 'error',
 	                answer: 'CardDirective',
 	            };
-	        })
+	        });
 	    }
 	    
 	    return {
@@ -1448,7 +1479,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div flex=\"33\" flex-gt-sm=\"50\" flex-gt-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
+	module.exports = "<div flex-gt-sm=\"33\" flex-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\" layout-sm=\"row\" layout-align=\"space-around\" ng-show=\"card.loading\">\r\n        <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r\n    </div>\r\n    <div layout=\"row\" ng-hide=\"card.loading\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-hide=\"card.loading\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0 && !card.loading\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1 && !card.loading\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-hide=\"card.loading\">\r\n        <md-chips>\r\n            <md-chip ng-repeat=\"tag in card.data.tags\">#{{tag.name}}</md-chip>\r\n        </md-chips>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
 /* 28 */
@@ -1483,7 +1514,7 @@
 /* 29 */
 /***/ function(module, exports) {
 
-	module.exports = "<img src=\"{{gravatar.src}}\">"
+	module.exports = "<img class=\"gravatar\" src=\"{{gravatar.src}}\">"
 
 /***/ },
 /* 30 */
@@ -1579,25 +1610,25 @@
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n{{home.data}}"
+	module.exports = "<md-subheader class=\"md-primary\">Your cards</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.data.user.cards\" id=\"card.id\"></card>\r\n</div>\r\n\r\n<md-subheader class=\"md-primary\">Have a look at: </md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in home.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>\r\n</div>"
+	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, market.tags)\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "here will be some card"
+	module.exports = "<h1>Your Cards</h1>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in cards.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\r\n    <gravatar email=\"app.user.email\" size=\"600\"></gravatar>\r\n    <md-card-content>\r\n        Full Name: {{app.user.full_name}}\r\n    </md-card-content>\r\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\r\n        <md-button>Save</md-button>\r\n    </md-card-actions>\r\n</md-card>\r\n"
+	module.exports = "<md-card>\r\n    <md-card-content layout=\"row\">\r\n        <gravatar layout-xs=\"row\" layout-gt-xs=\"column\" flex-gt-sm=\"20\" flex-gt-xs=\"40\" email=\"app.user.email\" size=\"600\"></gravatar>\r\n        <h2 layout-xs=\"row\" layout-gt-xs=\"column\" flex-gt-sm=\"80\" flex-gt-xs=\"60\">Full Name: {{app.user.full_name}}</h2>\r\n    </md-card-content>\r\n    <md-card-content>\r\n        Full Name: {{app.user.full_name}}\r\n    </md-card-content>\r\n    <md-card-actions layout=\"row\" layout-align=\"end center\">\r\n        <md-button>Save</md-button>\r\n    </md-card-actions>\r\n</md-card>\r\n"
 
 /***/ }
 /******/ ]);

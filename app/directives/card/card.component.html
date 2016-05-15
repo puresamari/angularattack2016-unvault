@@ -1,20 +1,28 @@
 <div flex-gt-sm="33" flex-xs="100" flex-sm="50" md-whiteframe="4" layout-padding>
-    <div layout="row">
+    <div layout="row" layout-sm="row" layout-align="space-around" ng-show="card.loading">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+    <div layout="row" ng-hide="card.loading">
         <h3>{{card.data.name}}</h3>
         <span flex></span>
         <md-button ng-click="card.userAddCard()">
             add
         </md-button>
     </div>
-    <div layout="row">
+    <div layout="row" ng-hide="card.loading">
         <p ng-show="card.state == 0">{{card.data.question}}</p>
         <p ng-show="card.state == 1">{{card.data.answer}}</p>
     </div>
-    <div layout="row" ng-show="card.state == 0">
+    <div layout="row" ng-show="card.state == 0 && !card.loading">
         <md-button class="md-accent md-raised md-hue-3" ng-click="card.state = 1">Answer</md-button>
     </div>
-    <div layout="row" ng-show="card.state == 1">
+    <div layout="row" ng-show="card.state == 1 && !card.loading">
         <md-button class="md-warn"><md-icon>cancel</md-icon></md-button>
         <md-button class="md-primary"><md-icon>check</md-icon></md-button>
+    </div>
+    <div layout="row" ng-hide="card.loading">
+        <md-chips>
+            <md-chip ng-repeat="tag in card.data.tags">#{{tag.name}}</md-chip>
+        </md-chips>
     </div>
 </div>

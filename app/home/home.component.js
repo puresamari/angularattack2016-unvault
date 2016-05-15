@@ -5,6 +5,7 @@ function HomeCtrl($scope, Data) {
     
     Data.get('home', null, function(response){
         vm.data = response.data;
+        console.log('home', response.data)
     });
     
     Data.get('user-cards', null, function(response){

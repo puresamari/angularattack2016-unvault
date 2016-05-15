@@ -1,10 +1,10 @@
 <md-toolbar md-whiteframe="4">
     <div class="md-toolbar-tools">
-        <md-button class="md-mini" aria-label="Logo" ui-sref="landing">
+        <md-button aria-label="Logo" ui-sref="landing">
             <img id="logo" src="../assets/img/logo.png">
         </md-button>
-        <h1 class="md-primary" flex="1">User {{main.user.full_name}}</h1>
-        <span flex></span>
+        <h1 class="md-primary" flex flex-gt-md="1">User {{main.user.full_name}}</h1>
+        <span flex hide show-gt-md></span>
         <md-tabs class="md-primary" show-gt-md flex-gt-md md-align-tabs="bottom" md-selected="tabs.selectedIndex">
             <md-tab ng-repeat="url in tabs.urls" ui-sref="app.{{url.state}}" md-active="tabs.stateName == url.state">
                 {{url.title}}

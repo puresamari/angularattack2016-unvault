@@ -32,18 +32,24 @@ function ManageCardsCtrl($scope, $rootScope, Data) {
     vm.update = function(){
         Data.put('update-card', vm.data, function(response){
             console.log('sending card returned', response);
+        }, function(result) {
+            console.error('update error ', result);   
         });
     };
     
     vm.delete = function(){
         Data.delete('card', function(response){
             console.log('sending card returned', response);
-        }, vm.data);
+        }, vm.data, function(result) {
+            console.error('delete error ', result);   
+        });
     };
     
     vm.add = function(){
         Data.send('add-card', vm.data.model, function(response){
             console.log('sending card returned', response);
+        }, function(result) {
+            console.error('add error ', result);   
         });
     };
  }
