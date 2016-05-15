@@ -1,7 +1,6 @@
-<md-subheader class="md-primary">Find</md-subheader>
-<div layout="row"layout-wrap>
-    <h2 flex="20">Find</h2>
-    <md-autocomplete md-auto-select="true" flex=80 md-selected-item="market.tagFilter" md-items="item in market.tags" md-item-text="item.name">
+<div layout="column" layout-wrap md-whiteframe="4" layout-margin>
+    <label layout="column" flex="20">Find</label>
+    <md-autocomplete flex="80" layout="column" md-auto-select="true" md-selected-item="market.tagFilter" md-items="item in market.tags" md-item-text="item.name">
         <span md-highlight-text="searchText">{{item.name}}</span>
     </md-autocomplete>
 </div>

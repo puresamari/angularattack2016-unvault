@@ -1289,8 +1289,10 @@
 	        var retval = false;
 	        if(tag == undefined) return true;
 	        angular.forEach(card, function(value, key) {
-	            console.log(value.id, tag.id)
-	            if(value.id == tag.id) retval = true; 
+	            if(value.id == tag.id) {
+	                retval = true;
+	            };
+	            console.log(value.id);
 	        });
 	        return retval;
 	    };
@@ -1323,7 +1325,12 @@
 	        if(vm.edit_enabled && vm.data.selectedCard != 0) {
 	            Data.get('card', vm.data.selectedCard, function(response){
 	                vm.data.model = response.data.card;
-	                vm.selectedTags = response.data.card.tags;
+	                vm.selectedTags = [];
+	                console.log(response.data.card.tags);
+	                angular.forEach(response.data.card.tags, function(value, key) {
+	                    vm.selectedTags.push(vm.availTags[value.id]);
+	                    console.log(value.id, vm.availTags)
+	                });
 	            });
 	        } else {
 	            vm.data.model = {
@@ -1331,13 +1338,12 @@
 	                "question": "",
 	                "answer": ""
 	            };
-	                vm.selectedTags = [];
+	            vm.selectedTags = [];
 	        }
 	    };
 	    vm.availTags = [];
 	    Data.get('tags', null, function(response){
 	        vm.availTags = response.data.tags;
-	        console.log(response);
 	    });
 	    
 	    vm.cards = [];
@@ -1350,14 +1356,13 @@
 	    
 	    vm.update = function(){
 	        var sendData = vm.data;
-	        vm.data.model.tags = [];
+	        sendData.model.tags = {_ids: {}};
 	        angular.forEach(vm.selectedTags, function(value, key) {
-	            vm.data.model.tags.push({
-	                'tag_id' : value.id,
-	                'card_id' : vm.data.selectedCard,
-	            });
+	            sendData.model.tags._ids[key] = value.id;
 	        });
+	        console.log(sendData, 'asdf');
 	        Data.put('update-card', sendData, function(response){
+	            console.log(response);
 	            Error.info('Added', 'Card "' + response.data.card.name + '" has been updated');
 	        }, function(result) {
 	            console.error('update error ', result);   
@@ -1375,11 +1380,9 @@
 	    
 	    vm.add = function(){
 	        var sendData = vm.data;
-	        vm.data.model.tags = [];
-	        angular.forEach(card, function(value, key) {
-	            vm.data.model.tags.push({
-	                'tag_id' : value.id
-	            });
+	        sendData.tags = {ids: {}};
+	        angular.forEach(vm.selectedTags, function(value, key) {
+	            sendData.tags.ids[key] = value.id;
 	        });
 	        Data.send('add-card', sendData, function(response){
 	            Error.info('Added', 'Card "' + response.data.name + '" has been added');
@@ -1464,7 +1467,7 @@
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	function CardDirective(Data){
+	function CardDirective(Data, Error){
 	    function CardCtrl($scope) {
 	        var vm = this;
 	        vm.state = 0;
@@ -1475,9 +1478,12 @@
 	        
 	        vm.userAddCard = function() {
 	            Data.send('user-add-card', {
-	                'user-id': localStorage.id,
+	                'user-id': parseInt(localStorage.id),
 	                'card-id': vm.data.id,
-	            }, function(result) {}, function(result) {
+	            }, function(result) {
+	                console.log(result);
+	                Error.info('Card', 'Card ')
+	            }, function(result) {
 	                console.error('userAddCard error ', result);   
 	            });
 	        };
@@ -1615,7 +1621,7 @@
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n        Unvault is here to open / unleash your mind and learn new stuff\r\n    </p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\r\n    </div>\r\n</md-content>"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <p class=\"md-headline\">Unvault <span class=\"md-subhead\"> - your mind ;)</span></p>\r\n    <p flex layout=\"row\">\r\n\t\tUnvault is here to open. Your e-learning app\r\n    </p>\r\n\t<p flex layout=\"row\">\r\n\t\tCreate learning cards with specific tags, add thoes cards to your feed and start learning new things.\r\n\t</p>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"app.home\" flex>go to app</md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"login\" flex=\"50\">Login</md-button>\r\n        <md-button class=\"md-raised md-primary\" ui-sref=\"register\" flex=\"50\">Register</md-button>\r\n    </div>\r\n</md-content>"
 
 /***/ },
 /* 32 */
@@ -1633,7 +1639,7 @@
 /* 34 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">manage Cards</h1>\r\n        <span flex></span>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-input-container ng-show=\"manageCards.edit_enabled\">\r\n            <label>Tags</label>\r\n            <md-select ng-model=\"manageCards.selectedTags\" md-on-close=\"clearSearchTerm()\" data-md-container-class=\"selectdemoSelectHeader\" multiple>\r\n                <md-optgroup label=\"Tags\">\r\n                    <md-option ng-value=\"tag\" ng-repeat=\"tag in manageCards.availTags\">{{tag.name}}</md-option>\r\n                </md-optgroup>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>\r\n\r\n {{manageCards.selectedTags}}"
+	module.exports = "<md-toolbar md-whiteframe=\"4\">\r\n    <div class=\"md-toolbar-tools\">\r\n        <md-button class=\"md-mini\" aria-label=\"Logo\" ui-sref=\"landing\">\r\n            <img id=\"logo\" src=\"../assets/img/logo.png\">\r\n        </md-button>\r\n        <h1 class=\"md-primary\" flex=\"1\">manage Cards</h1>\r\n        <span flex></span>\r\n    </div>\r\n</md-toolbar>\r\n<md-content layout=\"column\" flex layout-padding>\r\n    <div layout=\"row\">\r\n        <md-input-container flex=\"50\">\r\n            <md-select placeholder=\"Select a card\" ng-model=\"manageCards.data.selectedCard\" md-on-open=\"manageCards.loadCards()\" ng-change=\"manageCards.updateModel()\" ng-enabled=\"manageCards.edit\">\r\n                <md-option md-model=\"\" ng-click=\"manageCards.updateModel()\" ng-repeat=\"card in manageCards.cards\" ng-value=\"card.id\">{{card.id}} | {{card.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-input-container flex=\"50\" layout=\"row\" layout-align=\"center center\">\r\n            <span layout=\"column\">Add</span>\r\n            <md-switch layout=\"column\" flex ng-model=\"manageCards.edit_enabled\" aria-label=\"edit/add\" ng-change=\"manageCards.updateModel()\"></md-switch>\r\n            <span layout=\"column\">Edit</span>\r\n        </md-input-container>\r\n    </div>\r\n    <md-card>\r\n        <h1 layout=\"row\">{{manageCards.edit_enabled ? 'Update' : 'Add'}} Card</h1>\r\n        <md-input-container layout=\"row\">\r\n            <label>Name</label>\r\n            <input ng-model=\"manageCards.data.model.name\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Password</label>\r\n            <input ng-model=\"manageCards.data.model.question\">\r\n        </md-input-container>\r\n        <md-input-container layout=\"row\">\r\n            <label>Full Name</label>\r\n            <input ng-model=\"manageCards.data.model.answer\">\r\n        </md-input-container>\r\n        <md-input-container ng-show=\"manageCards.edit_enabled\">\r\n            <label>Tags</label>\r\n            <md-select ng-model=\"manageCards.selectedTags\" multiple>\r\n                <md-option ng-value=\"tag\" ng-repeat=\"tag in manageCards.availTags\">{{tag.name}}</md-option>\r\n            </md-select>\r\n        </md-input-container>\r\n        <md-button ng-click=\"manageCards.update()\" ng-show=\"manageCards.edit_enabled\">Update</md-button>\r\n        <md-button ng-click=\"manageCards.add()\" ng-show=\"!manageCards.edit_enabled\">Add</md-button>\r\n    </md-card>\r\n    <md-card>\r\n        <h1 layout=\"row\">Delete card</h1>\r\n        <md-button ng-click=\"manageCards.delete()\">Delete</md-button>\r\n    </md-card>\r\n</md-content>\r\n\r\n {{manageCards.selectedTags}}"
 
 /***/ },
 /* 35 */
@@ -1651,7 +1657,7 @@
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\"layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, market.tags)\"></card>\r\n</div>"
+	module.exports = "<md-subheader class=\"md-primary\">Find</md-subheader>\r\n<div layout=\"row\"layout-wrap>\r\n    <h2 flex=\"20\">Find</h2>\r\n    <md-autocomplete md-auto-select=\"true\" flex=80 md-selected-item=\"market.tagFilter\" md-items=\"item in market.tags\" md-item-text=\"item.name\">\r\n        <span md-highlight-text=\"searchText\">{{item.name}}</span>\r\n    </md-autocomplete>\r\n</div>\r\n\r\n<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\" ng-show=\"market.checkCardTags(market.tagFilter, card.tags)\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */
