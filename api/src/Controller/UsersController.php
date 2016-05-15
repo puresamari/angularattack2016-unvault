@@ -133,13 +133,13 @@ class UsersController extends AppController
 				];
             } else {
 				$message = [
-					"type" => "success",
+					"type" => "error",
 					"body" => "The user could not be saved. Please, try again."
 				];
             }
         }
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->set(compact('user', 'message'));
+        $this->set('_serialize', ['user', 'message']);
     }
 
     /**
@@ -151,6 +151,7 @@ class UsersController extends AppController
      */
     public function edit($id = null)
     {
+		$message = [];
         $user = $this->Users->get($id, [
             'contain' => [
 				'Cards'
@@ -160,14 +161,21 @@ class UsersController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->data);
             if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+				$message = [
+					"type" => "success",
+					"body" => "The user has been saved."
+				];
+                $this->Flash->success(__(''));
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The user could not be saved. Please, try again.'));
+				$message = [
+					"type" => "error",
+					"body" => "The user could not be saved. Please, try again."
+				];
             }
         }
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->set(compact('user', 'message'));
+        $this->set('_serialize', ['user', 'message']);
     }
 
     /**
@@ -181,12 +189,21 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
+		$message = [];
         if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
+			$message = [
+				"type" => "success",
+				"body" => "The user has been deleted."
+			];
         } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+			$message = [
+				"type" => "error",
+				"body" => "The user could not be deleted. Please, try again."
+			];
         }
         return $this->redirect(['action' => 'index']);
+		$this->set(compact('message'));
+		$this->set('_serialize', ['message']);
     }
 	
 }
