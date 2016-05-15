@@ -53,17 +53,13 @@ class AppController extends Controller
 	}
 
 
-//	/**
-//    * Before filter logic
-//    *
-//    */
+	/**
+    * Before filter logic
+    *
+    */
 //	public function beforeFilter(Event $event)
 //	{
-//		$this->response->header('Access-Control-Allow-Origin','*');
-//		$this->response->header('Access-Control-Allow-Methods','*');
-//		$this->response->header('Access-Control-Allow-Headers','X-Requested-With');
-//		$this->response->header('Access-Control-Allow-Headers','Content-Type, Authorization');
-//		$this->response->header('Access-Control-Max-Age','172800');
+//		
 //		
 //		$this->user_id = $this->Auth->user('id');
 //
