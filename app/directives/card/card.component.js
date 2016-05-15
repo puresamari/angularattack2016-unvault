@@ -11,8 +11,8 @@ function CardDirective(Data){
             Data.send('user-add-card', {
                 'user-id': localStorage.id,
                 'card-id': vm.data.id,
-            }, function(){
-                
+            }, function(result) {}, function(result) {
+                console.error('userAddCard error ', result);   
             });
         };
         
@@ -20,7 +20,7 @@ function CardDirective(Data){
             vm.data = result.data.card;
             vm.loading = false;
         }, function(result){
-            console.error('Error while requesting card :', result);
+            console.error('Error while requesting card ', result);
             vm.loading = false;
             vm.data = {
                 name: 'error',

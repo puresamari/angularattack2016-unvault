@@ -5,6 +5,7 @@ function CardsCtrl($scope, Data) {
     
     Data.get('user-cards', null, function(response){
         vm.cards = response.data;
+        console.log(response);
     });
  }
 
