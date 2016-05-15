@@ -7,19 +7,20 @@ function AppCtrl($scope, $rootScope, $location, $state, Data) {
     
     vm.logout = function(){
         clearTimeout(checkerTimeout);
-        Data.get('logout', function(response){
+        Data.get('logout', null, function(response){
             vm.user = response.data.user;
         });
     };
     
     function checkUser() {
-        Data.get('user', function(response){
+        console.log('checking user');
+        Data.get('user', null, function(response){
             console.log('app user check: ', response);
-            var logout = response.data.user == null;
-            if(logout) {
-                vm.logout();
-            }
-            vm.user = response.data.user;
+//            var logout = response.data.user == null;
+//            if(logout) {
+//                vm.logout();
+//            }
+//            vm.user = response.data.user;
         });
     }
     $rootScope.$on('$stateChangeSuccess', checkUser);

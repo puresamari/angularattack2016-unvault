@@ -4,10 +4,27 @@ app.config(function($mdThemingProvider) {
         .accentPalette('yellow');
 });
 
-app.factory('Data', function($http, $rootScope) {
+app.service('Error', function($mdDialog, $mdMedia) {
+    var serv = {}
+    
+    serv.alert = function(title, message) {
+        var customFullscreen = $mdMedia('xs') || $mdMedia('sm');
+        $mdDialog.show(
+            $mdDialog.alert()
+                .parent(angular.element(document.documentElement))
+                .title(title)
+                .textContent(message)
+                .ariaLabel(title)
+                .ok('OK')
+        );
+    };
+    
+    return serv;
+});
+app.factory('Data', function($http, $rootScope, $mdDialog) {
     var service = {};
     
-    service.get = function(e, _promise, data) {
+    service.get = function(e, data, _promise, _error) {
         var url = 'home.json';
         switch (e) {
             case 'general':
@@ -27,15 +44,22 @@ app.factory('Data', function($http, $rootScope) {
                 break;
         }
         var req = {
+//            method: 'POST',
             method: 'GET',
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json',
-//                'Authorization': localStorage.token
+                'Authorization': localStorage.token
             }
         };
-        console.log('getting', req)
-        return $http(req).then( _promise );
+        console.log('getting', req);
+        console.log('setting err');
+        if(_error == undefined) {
+            _error = function(response){
+                console.log('error: ', response);
+            }
+        }
+        return $http(req).then( _promise , _error);
     };
     
     service.delete = function(e, _promise, data) {
@@ -46,7 +70,8 @@ app.factory('Data', function($http, $rootScope) {
                 break;
         }
         var req = {
-            method: 'DELETE',
+            method: 'POST',
+//            method: 'DELETE',
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json'
@@ -56,15 +81,15 @@ app.factory('Data', function($http, $rootScope) {
         return $http(req).then( _promise );
     };
     
-    service.send = function(e, data, _promise) {
+    service.send = function(e, data, _promise, _error) {
         var url = '',
             senddata = data;
         switch (e) {
             case 'register':
-                url = 'users/add';
+                url = 'users/add.json';
                 break;
             case 'login':
-                url = 'users/login';
+                url = 'login';
                 break;
             case 'add-card':
                 url = 'add-card.json';
@@ -79,11 +104,15 @@ app.factory('Data', function($http, $rootScope) {
                 'accept': 'application/json'
             }
         };
-        console.log('sending', req);
-        return $http(req).then( _promise );
+        if(_error == undefined) {
+            _error = function(response){
+                console.log('error: ', response);
+            }
+        }
+        return $http(req).then( _promise, _error );
     };
     
-    service.put = function(e, data, _promise) {
+    service.put = function(e, data, _promise, _error) {
         var url = '',
             data = data;
         switch (e) {
@@ -93,7 +122,8 @@ app.factory('Data', function($http, $rootScope) {
                 break;
         }
         var req = {
-            method: 'PUT',
+            method: 'POST',
+//            method: 'PUT',
             url: 'http://52.39.11.99/' + url,
             data: data,
             headers: {
