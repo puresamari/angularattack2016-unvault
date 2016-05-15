@@ -1,5 +1,8 @@
 <md-card>
-    <gravatar email="app.user.email" size="600"></gravatar>
+    <md-card-content layout="row">
+        <gravatar layout-xs="row" layout-gt-xs="column" flex-gt-sm="20" flex-gt-xs="40" email="app.user.email" size="600"></gravatar>
+        <h2 layout-xs="row" layout-gt-xs="column" flex-gt-sm="80" flex-gt-xs="60">Full Name: {{app.user.full_name}}</h2>
+    </md-card-content>
     <md-card-content>
         Full Name: {{app.user.full_name}}
     </md-card-content>

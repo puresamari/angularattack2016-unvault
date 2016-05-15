@@ -16,6 +16,7 @@ function CardDirective(Data){
         };
         
         Data.get('card', $scope.id, function(result){
+            console.log('card', result.data.card);
             vm.data = result.data.card;
         }, function(result){
             console.error('Error while requesting card :', result);
@@ -24,7 +25,7 @@ function CardDirective(Data){
                 question: 'error',
                 answer: 'CardDirective',
             };
-        })
+        });
     }
     
     return {

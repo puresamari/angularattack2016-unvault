@@ -17,4 +17,9 @@
         <md-button class="md-warn"><md-icon>cancel</md-icon></md-button>
         <md-button class="md-primary"><md-icon>check</md-icon></md-button>
     </div>
+    <div layout="row">
+        <md-chips>
+            <md-chip ng-repeat="tag in card.data.tags">#{{tag.name}}</md-chip>
+        </md-chips>
+    </div>
 </div>

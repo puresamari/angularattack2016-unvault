@@ -1250,9 +1250,14 @@
 /* 21 */
 /***/ function(module, exports) {
 
-	function CardsCtrl($scope) {
+	function CardsCtrl($scope, Data) {
 	    var vm = this;
-	    vm.test = 'test20';
+	    
+	    vm.cards = {};
+	    
+	    Data.get('user-cards', null, function(response){
+	        vm.cards = response.data;
+	    });
 	 }
 	
 	app.controller('CardsCtrl', CardsCtrl);
@@ -1267,7 +1272,6 @@
 	    
 	    Data.get('cards', null, function(response){
 	        vm.cards = response.data.cards;
-	        console.log('cards', vm.cards);
 	    });
 	 }
 	
@@ -1448,7 +1452,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div flex=\"33\" flex-gt-sm=\"50\" flex-gt-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
+	module.exports = "<div flex-gt-sm=\"33\" flex-xs=\"100\" flex-sm=\"50\" md-whiteframe=\"4\" layout-padding>\r\n    <div layout=\"row\">\r\n        <h3>{{card.data.name}}</h3>\r\n        <span flex></span>\r\n        <md-button ng-click=\"card.userAddCard()\">\r\n            add\r\n        </md-button>\r\n    </div>\r\n    <div layout=\"row\">\r\n        <p ng-show=\"card.state == 0\">{{card.data.question}}</p>\r\n        <p ng-show=\"card.state == 1\">{{card.data.answer}}</p>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 0\">\r\n        <md-button class=\"md-accent md-raised md-hue-3\" ng-click=\"card.state = 1\">Answer</md-button>\r\n    </div>\r\n    <div layout=\"row\" ng-show=\"card.state == 1\">\r\n        <md-button class=\"md-warn\"><md-icon>cancel</md-icon></md-button>\r\n        <md-button class=\"md-primary\"><md-icon>check</md-icon></md-button>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
 /* 28 */
@@ -1585,13 +1589,13 @@
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>\r\n</div>"
+	module.exports = "<div layout=\"row\" layout-wrap>\r\n    <card ng-repeat=\"card in market.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "here will be some card"
+	module.exports = "<h1>Your Cards</h1>\r\n<div layout=\"row\" layout-xs=\"column\" layout-wrap>\r\n    <card ng-repeat=\"card in cards.cards\" id=\"card.id\"></card>\r\n</div>"
 
 /***/ },
 /* 39 */
