@@ -35,17 +35,17 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
             case 'general':
                 url = 'home.json';
                 break;
-            case 'logout':
-                url = 'logout';
-                break;
             case 'user':
-                url = localStorage.id + '/users.json';
+                url = 'user';
                 break;
             case 'card':
                 url = data + '/card.json';
                 break;
             case 'cards':
-                url = '/cards.json';
+                url = 'cards.json';
+                break;
+            case 'logout':
+                url = 'login'
                 break;
         }
         var req = {
@@ -70,10 +70,12 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
             case 'card':
                 url = data.selectedCard + '/delete-card.json';
                 break;
+            case 'logout':
+                url = 'login';
+                break;
         }
         var req = {
-            method: 'POST',
-//            method: 'DELETE',
+            method: 'DELETE',
             url: 'http://52.39.11.99/' + url,
             headers: {
                 'accept': 'application/json'
@@ -109,6 +111,7 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
                 'accept': 'application/json'
             }
         };
+        console.log('posting data', req);
         if(_error == undefined) {
             _error = errorFn;
         }
@@ -143,7 +146,31 @@ app.factory('Data', function($http, $rootScope, $mdDialog, Error) {
     return service;
 });
 
-app.controller('MainCtrl', function(Data){
+app.controller('MainCtrl', function(Data, $rootScope){
     var vm = this;
-    vm.token = '';
+    
+    var checkerTimeout;
+    
+    vm.user = {};
+    
+    vm.logout = function(){
+        clearTimeout(checkerTimeout);
+        Data.get('logout', null, function(response){
+            vm.user = response.data.user;
+        });
+    };
+    
+    function checkUser() {
+        Data.get('user', null, function(response){
+            var logout = response.data.user == null;
+            if(logout) {
+                vm.logout();
+            }
+            vm.user = response.data.user;
+        }, function(result){
+            console.error('Error while checking user', result);
+         });
+    }
+    $rootScope.$on('$stateChangeSuccess', checkUser);
+    checkUser();
 });

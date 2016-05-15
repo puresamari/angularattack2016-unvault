@@ -7,6 +7,13 @@ function CardDirective(Data){
         
         Data.get('card', $scope.id, function(result){
             vm.data = result.data.card;
+        }, function(result){
+            console.error('Error while requesting card :', result);
+            vm.data = {
+                name: 'error',
+                question: 'error',
+                answer: 'CardDirective',
+            };
         })
     }
     
